@@ -1,0 +1,29 @@
+{
+  "Metadata": {
+    "title": "Document Q&A",
+    "description": "Citable answers from Persian and English documents"
+  },
+  "Home": {
+    "brand": "Document Q&A",
+    "languageLabel": "فارسی",
+    "eyebrow": "Precise answers, grounded in sources",
+    "title": "Find the knowledge hidden in your documents.",
+    "description": "Add Persian or English documents, ask a question, and receive an answer whose claims you can inspect at the source.",
+    "primaryAction": "Start with a document",
+    "secondaryAction": "See how it works",
+    "workflowTitle": "From file to trustworthy answer",
+    "workflowDescription": "Every answer is composed from relevant passages and links back to the original page.",
+    "stepOneTitle": "Add a document",
+    "stepOneBody": "Upload a PDF or text file with clear processing progress.",
+    "stepTwoTitle": "Ask in your language",
+    "stepTwoBody": "Your question and source can be Persian or English.",
+    "stepThreeTitle": "Inspect the evidence",
+    "stepThreeBody": "See the answer, page, and supporting passage together.",
+    "foundation": "Engineering foundation",
+    "foundationBody": "This baseline verifies the secure, versioned connection between the interface and API.",
+    "statusChecking": "Checking the API connection…",
+    "statusOnline": "The API is ready",
+    "statusOffline": "The API is unavailable",
+    "statusHint": "For local development, run the backend on port 8000."
+  }
+}
