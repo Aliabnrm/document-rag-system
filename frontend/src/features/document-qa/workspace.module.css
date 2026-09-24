@@ -569,6 +569,11 @@
   margin: var(--space-2) 0 0;
 }
 
+.documentsPanel .inlineError,
+.messages .inlineError {
+  margin-inline: 0;
+}
+
 .inlineError button {
   background: transparent;
   border: 0;

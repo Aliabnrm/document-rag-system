@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseEventStreamBuffer } from "./api";
+import { parseEventStreamBuffer } from "./answer-stream.api";
 
 describe("parseEventStreamBuffer", () => {
   it("keeps incomplete frames and returns typed answer events", () => {
@@ -22,7 +22,7 @@ describe("parseEventStreamBuffer", () => {
     expect(second.remaining).toBe("");
   });
 
-  it("rejects malformed citation payloads instead of trusting the stream", () => {
+  it("rejects malformed citation payloads", () => {
     const parsed = parseEventStreamBuffer(
       'event: citations\ndata: {"items":[{"evidence_id":"E1"}]}\n\n',
     );

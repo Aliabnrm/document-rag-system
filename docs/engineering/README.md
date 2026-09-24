@@ -19,3 +19,7 @@ At the end of each sprint, the engineering record must let another contributor a
 5. How was correctness and RAG quality measured?
 6. What limitations and follow-up work remain?
 7. Which backend, AI, frontend, and design-system concepts should a learner retain?
+
+Subsystem guides:
+
+- [Frontend architecture](frontend-architecture.md)

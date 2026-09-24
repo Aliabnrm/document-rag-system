@@ -6,6 +6,8 @@ import type { ReactNode } from "react";
 
 import { routing } from "@/i18n/routing";
 
+import { AppProviders } from "../providers";
+
 import "../globals.css";
 
 type LocaleLayoutProps = {
@@ -40,7 +42,9 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={direction}>
       <body>
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <AppProviders>{children}</AppProviders>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

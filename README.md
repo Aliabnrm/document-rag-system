@@ -51,6 +51,7 @@ Detailed setup, operational recovery, configuration, API events, and evaluation 
 - [Sprint 1 API guide](docs/api/sprint-1-api.md)
 - [Sprint 1 evaluation](docs/evaluation/sprint-1.md)
 - [Persian backend/AI walkthrough](docs/learning/sprint-1-rag-walkthrough-fa.md)
+- [Frontend architecture](docs/engineering/frontend-architecture.md)
 
 ## Quality checks
 

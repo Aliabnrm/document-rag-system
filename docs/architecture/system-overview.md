@@ -21,6 +21,16 @@ flowchart LR
 PostgreSQL is authoritative. Redis transports work but does not own job state. MinIO owns
 immutable uploaded bytes; database rows own identity, authorization, lifecycle, and provenance.
 
+## Frontend style
+
+The Next.js App Router owns routing, locale layouts, metadata, and provider composition. Feature
+components remain outside `app/`; TanStack Query hooks own remote server state, resource API
+functions own endpoint calls, and Zod schemas validate every unknown response at the transport
+boundary. Answer SSE uses a dedicated Fetch/ReadableStream adapter because it has a different
+lifecycle from finite REST requests. See the
+[frontend architecture guide](../engineering/frontend-architecture.md) for the dependency rules,
+folder responsibilities, and request flow.
+
 ## Backend style
 
 The backend is a modular monolith. Each module owns its vocabulary and behavior, while sharing one deployment and database initially. Application code depends on interfaces; infrastructure adapters implement database, object-storage, queue, embedding, reranking, and generation access.

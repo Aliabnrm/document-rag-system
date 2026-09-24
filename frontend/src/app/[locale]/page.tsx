@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
-import { DocumentQaWorkspace } from "@/features/document-qa/workspace";
+import { DocumentQaWorkspace } from "@/features/document-qa";
 import type { Locale } from "@/i18n/routing";
 
 type HomePageProps = {

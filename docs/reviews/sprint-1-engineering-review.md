@@ -60,11 +60,12 @@ and breakpoints. Feature code does not introduce ad-hoc palette or layout values
 - Backend unit/integration suite exercises state machines, Persian normalization, extraction,
   chunk overlap, fusion, context packing, citation validation, migrations/infrastructure, duplicate
   ingestion, authorization, dispatch recovery, readiness, and the complete deterministic flow.
-- Frontend tests exercise the API/SSE parser and collection/chat availability behavior.
+- Frontend tests exercise injected API contracts, SSE parsing, file validation, streamed-message
+  reduction, and collection/chat availability behavior.
 - The versioned 40-question evaluation records retrieval, citation, abstention, relevance, latency,
   throughput, model/prompt/chunker/retriever/pipeline, and hardware context.
 - Empty-database upgrade/check/downgrade/re-upgrade passed. Ruff, strict MyPy, 20 backend tests,
-  ESLint, TypeScript, 5 frontend tests, production build, peer check, Compose validation, and diff
+  ESLint, TypeScript, 9 frontend tests, production build, peer check, Compose validation, and diff
   whitespace validation passed on 2026-09-24.
 - The visual matrix and exact contrast evidence are recorded in
   `sprint-1-visual-accessibility-review.md`.
