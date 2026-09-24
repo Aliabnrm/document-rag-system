@@ -1,0 +1,1581 @@
+{
+  "report_type": "measured_baseline",
+  "measured_at": "2026-09-24T08:40:50.094595+00:00",
+  "dataset": "sprint-1-v1.jsonl",
+  "dataset_size": 40,
+  "config": {
+    "dataset_version": "sprint-1-v1",
+    "chunker_version": "boundary-token-v1",
+    "pipeline_version": "ingestion-v1",
+    "chunk_size_tokens": 64,
+    "chunk_overlap_tokens": 12,
+    "dense_k": 12,
+    "lexical_k": 12,
+    "final_k": 6,
+    "context_token_budget": 512,
+    "rrf_rank_constant": 60,
+    "documents": [
+      "fa-company.txt",
+      "fa-university.txt",
+      "en-handbook.txt",
+      "en-safety.txt"
+    ]
+  },
+  "providers": {
+    "embedding": {
+      "provider": "fastembed",
+      "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "revision": "faf4aa4225822f3bc6376869cb1164e8e3feedd0",
+      "dimensions": 384,
+      "maximum_input_tokens": 512,
+      "runtime": "fastembed-onnx",
+      "throughput_chunks_per_second": 55.118,
+      "fixture_chunks": 12
+    },
+    "answer": {
+      "provider": "deterministic",
+      "model": "qwen2.5:1.5b",
+      "runtime": {
+        "kind": "in-process-deterministic"
+      }
+    }
+  },
+  "hardware": {
+    "system": "Darwin",
+    "release": "27.0.0",
+    "machine": "arm64",
+    "cpu_count": 8,
+    "memory_gib": 8.0,
+    "python": "3.13.14",
+    "fastembed": "0.8.1",
+    "onnxruntime": "1.30.0"
+  },
+  "summary": {
+    "retrieval_recall_at_k": 0.944444,
+    "mrr": 0.859722,
+    "citation_identifier_validity": 1.0,
+    "citation_support": 0.775,
+    "groundedness_proxy": 0.775,
+    "answer_relevance": 0.625,
+    "abstention_accuracy": 0.925,
+    "median_time_to_first_token_ms": 0.291,
+    "median_total_latency_ms": 0.315
+  },
+  "by_category": {
+    "adversarial_document": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 1.0,
+      "groundedness_proxy": 1.0,
+      "answer_relevance": 0.5,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 0.28,
+      "median_total_latency_ms": 0.309
+    },
+    "ambiguous": {
+      "retrieval_recall_at_k": null,
+      "mrr": null,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.0,
+      "groundedness_proxy": 0.0,
+      "answer_relevance": 0.0,
+      "abstention_accuracy": 0.0,
+      "median_time_to_first_token_ms": 0.22,
+      "median_total_latency_ms": 0.242
+    },
+    "cross_lingual": {
+      "retrieval_recall_at_k": 0.666667,
+      "mrr": 0.325,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.0,
+      "groundedness_proxy": 0.0,
+      "answer_relevance": 0.0,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 0.291,
+      "median_total_latency_ms": 0.315
+    },
+    "direct_fact": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 1.0,
+      "groundedness_proxy": 1.0,
+      "answer_relevance": 0.857143,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 0.286,
+      "median_total_latency_ms": 0.305
+    },
+    "exact_date": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 0.75,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 1.0,
+      "groundedness_proxy": 1.0,
+      "answer_relevance": 0.5,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 0.28,
+      "median_total_latency_ms": 0.299
+    },
+    "exact_identifier": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 1.0,
+      "groundedness_proxy": 1.0,
+      "answer_relevance": 0.8,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 0.316,
+      "median_total_latency_ms": 0.342
+    },
+    "exact_number": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 1.0,
+      "groundedness_proxy": 1.0,
+      "answer_relevance": 1.0,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 0.312,
+      "median_total_latency_ms": 0.334
+    },
+    "multiple_passages": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 1.0,
+      "groundedness_proxy": 1.0,
+      "answer_relevance": 1.0,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 0.3,
+      "median_total_latency_ms": 0.33
+    },
+    "semantic_paraphrase": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 1.0,
+      "groundedness_proxy": 1.0,
+      "answer_relevance": 0.833333,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 0.273,
+      "median_total_latency_ms": 0.291
+    },
+    "unanswerable": {
+      "retrieval_recall_at_k": null,
+      "mrr": null,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.333333,
+      "groundedness_proxy": 0.333333,
+      "answer_relevance": 0.333333,
+      "abstention_accuracy": 0.333333,
+      "median_time_to_first_token_ms": 0.313,
+      "median_total_latency_ms": 0.333
+    }
+  },
+  "results": [
+    {
+      "id": "q01",
+      "category": "direct_fact",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 325,
+      "output_tokens": 30,
+      "time_to_first_token_ms": 0.354,
+      "total_latency_ms": 0.384
+    },
+    {
+      "id": "q02",
+      "category": "direct_fact",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 300,
+      "output_tokens": 30,
+      "time_to_first_token_ms": 0.324,
+      "total_latency_ms": 0.354
+    },
+    {
+      "id": "q03",
+      "category": "exact_identifier",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 350,
+      "output_tokens": 20,
+      "time_to_first_token_ms": 0.53,
+      "total_latency_ms": 0.601
+    },
+    {
+      "id": "q04",
+      "category": "exact_date",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 317,
+      "output_tokens": 21,
+      "time_to_first_token_ms": 0.344,
+      "total_latency_ms": 0.366
+    },
+    {
+      "id": "q05",
+      "category": "semantic_paraphrase",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 314,
+      "output_tokens": 20,
+      "time_to_first_token_ms": 0.313,
+      "total_latency_ms": 0.334
+    },
+    {
+      "id": "q06",
+      "category": "semantic_paraphrase",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 314,
+      "output_tokens": 26,
+      "time_to_first_token_ms": 0.566,
+      "total_latency_ms": 0.595
+    },
+    {
+      "id": "q07",
+      "category": "exact_number",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 302,
+      "output_tokens": 27,
+      "time_to_first_token_ms": 0.46,
+      "total_latency_ms": 0.491
+    },
+    {
+      "id": "q08",
+      "category": "exact_identifier",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 312,
+      "output_tokens": 27,
+      "time_to_first_token_ms": 0.316,
+      "total_latency_ms": 0.342
+    },
+    {
+      "id": "q09",
+      "category": "cross_lingual",
+      "language": "en",
+      "retrieval_recall_at_k": 0,
+      "reciprocal_rank": 0.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 302,
+      "output_tokens": 29,
+      "time_to_first_token_ms": 0.21,
+      "total_latency_ms": 0.234
+    },
+    {
+      "id": "q10",
+      "category": "cross_lingual",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 0.5,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 320,
+      "output_tokens": 23,
+      "time_to_first_token_ms": 0.395,
+      "total_latency_ms": 0.421
+    },
+    {
+      "id": "q11",
+      "category": "adversarial_document",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 266,
+      "output_tokens": 38,
+      "time_to_first_token_ms": 0.359,
+      "total_latency_ms": 0.394
+    },
+    {
+      "id": "q12",
+      "category": "multiple_passages",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 306,
+      "output_tokens": 29,
+      "time_to_first_token_ms": 0.345,
+      "total_latency_ms": 0.372
+    },
+    {
+      "id": "q13",
+      "category": "direct_fact",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 310,
+      "output_tokens": 23,
+      "time_to_first_token_ms": 0.601,
+      "total_latency_ms": 0.629
+    },
+    {
+      "id": "q14",
+      "category": "exact_date",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 0.5,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 303,
+      "output_tokens": 23,
+      "time_to_first_token_ms": 0.305,
+      "total_latency_ms": 0.328
+    },
+    {
+      "id": "q15",
+      "category": "direct_fact",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 300,
+      "output_tokens": 19,
+      "time_to_first_token_ms": 0.286,
+      "total_latency_ms": 0.305
+    },
+    {
+      "id": "q16",
+      "category": "exact_identifier",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 294,
+      "output_tokens": 29,
+      "time_to_first_token_ms": 0.455,
+      "total_latency_ms": 0.481
+    },
+    {
+      "id": "q17",
+      "category": "semantic_paraphrase",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 321,
+      "output_tokens": 24,
+      "time_to_first_token_ms": 0.898,
+      "total_latency_ms": 0.947
+    },
+    {
+      "id": "q18",
+      "category": "exact_number",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 306,
+      "output_tokens": 24,
+      "time_to_first_token_ms": 0.352,
+      "total_latency_ms": 0.375
+    },
+    {
+      "id": "q19",
+      "category": "exact_number",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 310,
+      "output_tokens": 22,
+      "time_to_first_token_ms": 0.273,
+      "total_latency_ms": 0.292
+    },
+    {
+      "id": "q20",
+      "category": "cross_lingual",
+      "language": "en",
+      "retrieval_recall_at_k": 0,
+      "reciprocal_rank": 0.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 302,
+      "output_tokens": 19,
+      "time_to_first_token_ms": 0.201,
+      "total_latency_ms": 0.219
+    },
+    {
+      "id": "q21",
+      "category": "direct_fact",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 304,
+      "output_tokens": 29,
+      "time_to_first_token_ms": 0.207,
+      "total_latency_ms": 0.229
+    },
+    {
+      "id": "q22",
+      "category": "direct_fact",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 318,
+      "output_tokens": 20,
+      "time_to_first_token_ms": 0.237,
+      "total_latency_ms": 0.255
+    },
+    {
+      "id": "q23",
+      "category": "exact_identifier",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 301,
+      "output_tokens": 19,
+      "time_to_first_token_ms": 0.202,
+      "total_latency_ms": 0.218
+    },
+    {
+      "id": "q24",
+      "category": "exact_date",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 309,
+      "output_tokens": 13,
+      "time_to_first_token_ms": 0.256,
+      "total_latency_ms": 0.271
+    },
+    {
+      "id": "q25",
+      "category": "semantic_paraphrase",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 305,
+      "output_tokens": 23,
+      "time_to_first_token_ms": 0.219,
+      "total_latency_ms": 0.238
+    },
+    {
+      "id": "q26",
+      "category": "exact_number",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 317,
+      "output_tokens": 21,
+      "time_to_first_token_ms": 0.272,
+      "total_latency_ms": 0.29
+    },
+    {
+      "id": "q27",
+      "category": "multiple_passages",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 309,
+      "output_tokens": 32,
+      "time_to_first_token_ms": 0.256,
+      "total_latency_ms": 0.287
+    },
+    {
+      "id": "q28",
+      "category": "cross_lingual",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 341,
+      "output_tokens": 30,
+      "time_to_first_token_ms": 0.291,
+      "total_latency_ms": 0.315
+    },
+    {
+      "id": "q29",
+      "category": "cross_lingual",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 0.2,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 321,
+      "output_tokens": 26,
+      "time_to_first_token_ms": 0.346,
+      "total_latency_ms": 0.369
+    },
+    {
+      "id": "q30",
+      "category": "adversarial_document",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 303,
+      "output_tokens": 32,
+      "time_to_first_token_ms": 0.201,
+      "total_latency_ms": 0.225
+    },
+    {
+      "id": "q31",
+      "category": "direct_fact",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 301,
+      "output_tokens": 23,
+      "time_to_first_token_ms": 0.237,
+      "total_latency_ms": 0.259
+    },
+    {
+      "id": "q32",
+      "category": "semantic_paraphrase",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 302,
+      "output_tokens": 18,
+      "time_to_first_token_ms": 0.232,
+      "total_latency_ms": 0.249
+    },
+    {
+      "id": "q33",
+      "category": "exact_date",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 0.5,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 303,
+      "output_tokens": 26,
+      "time_to_first_token_ms": 0.195,
+      "total_latency_ms": 0.215
+    },
+    {
+      "id": "q34",
+      "category": "exact_identifier",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 301,
+      "output_tokens": 19,
+      "time_to_first_token_ms": 0.192,
+      "total_latency_ms": 0.208
+    },
+    {
+      "id": "q35",
+      "category": "cross_lingual",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 0.25,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 316,
+      "output_tokens": 27,
+      "time_to_first_token_ms": 0.291,
+      "total_latency_ms": 0.315
+    },
+    {
+      "id": "q36",
+      "category": "semantic_paraphrase",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 306,
+      "output_tokens": 23,
+      "time_to_first_token_ms": 0.196,
+      "total_latency_ms": 0.216
+    },
+    {
+      "id": "q37",
+      "category": "unanswerable",
+      "language": "fa",
+      "retrieval_recall_at_k": null,
+      "reciprocal_rank": null,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": false,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 329,
+      "output_tokens": 21,
+      "time_to_first_token_ms": 0.313,
+      "total_latency_ms": 0.333
+    },
+    {
+      "id": "q38",
+      "category": "unanswerable",
+      "language": "en",
+      "retrieval_recall_at_k": null,
+      "reciprocal_rank": null,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": false,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 305,
+      "output_tokens": 20,
+      "time_to_first_token_ms": 0.343,
+      "total_latency_ms": 0.362
+    },
+    {
+      "id": "q39",
+      "category": "unanswerable",
+      "language": "fa",
+      "retrieval_recall_at_k": null,
+      "reciprocal_rank": null,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": true,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 6,
+      "output_tokens": 12,
+      "time_to_first_token_ms": 0.263,
+      "total_latency_ms": 0.281
+    },
+    {
+      "id": "q40",
+      "category": "ambiguous",
+      "language": "en",
+      "retrieval_recall_at_k": null,
+      "reciprocal_rank": null,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": false,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "deterministic",
+        "model": "extractive-overlap-v1",
+        "prompt_version": "grounded-answer-v1"
+      },
+      "input_tokens": 299,
+      "output_tokens": 19,
+      "time_to_first_token_ms": 0.22,
+      "total_latency_ms": 0.242
+    }
+  ],
+  "notes": [
+    "Lexical scores in this portable runner use normalized token overlap; production uses PostgreSQL full-text search.",
+    "Groundedness is an automated citation-support proxy, not a human judge score.",
+    "No release threshold is inferred from this first baseline."
+  ]
+}

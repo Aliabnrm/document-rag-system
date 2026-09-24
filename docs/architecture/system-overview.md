@@ -18,15 +18,19 @@ flowchart LR
     A --> G[Generation service]
 ```
 
+PostgreSQL is authoritative. Redis transports work but does not own job state. MinIO owns
+immutable uploaded bytes; database rows own identity, authorization, lifecycle, and provenance.
+
 ## Backend style
 
 The backend is a modular monolith. Each module owns its vocabulary and behavior, while sharing one deployment and database initially. Application code depends on interfaces; infrastructure adapters implement database, object-storage, queue, embedding, reranking, and generation access.
 
-Initial modules:
+Sprint 1 modules:
 
-- `documents`: collections, documents, versions, ownership, and lifecycle.
+- `collections`: collection ownership and creation.
+- `documents`: stable documents, immutable versions, upload, status, and pagination.
 - `ingestion`: extraction, normalization, chunking, embedding, and job state.
-- `retrieval`: query preparation, hybrid search, fusion, and reranking.
+- `retrieval`: scoped dense/lexical search, fusion, deduplication, and context packing.
 - `conversations`: questions, answers, citations, feedback, and streaming.
 
 ## Ingestion flow
@@ -40,17 +44,72 @@ Initial modules:
 7. The new document version becomes ready only after all required artifacts commit.
 
 Jobs must be idempotent: retrying the same document version cannot create duplicate chunks.
+Celery delivery is at-least-once. A periodic dispatch reconciler leases old queued database jobs
+and sends them again when the API may have crashed between the database commit and broker send.
+The worker's database claim makes the resulting duplicate messages harmless.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant UI as Next.js
+    participant API as FastAPI
+    participant S3 as MinIO
+    participant DB as PostgreSQL
+    participant Q as Redis/Celery
+    participant W as Worker
+    User->>UI: Upload PDF/TXT
+    UI->>API: multipart upload
+    API->>API: stream validation + SHA-256
+    API->>S3: store generated object key
+    API->>DB: commit version + durable job
+    API->>Q: dispatch immutable job/version IDs
+    API-->>UI: 202 queued
+    Q->>W: at-least-once task
+    W->>DB: idempotent claim
+    W->>S3: download to bounded spool
+    W->>W: extract → normalize → chunk → embed
+    W->>DB: atomic chunks + READY
+    UI->>API: poll document status
+    API-->>UI: READY
+```
 
 ## Query flow
 
 1. API resolves the user's allowed document versions before retrieval.
 2. The query is normalized and optionally rewritten using conversation context.
 3. Dense and lexical searches produce candidates inside that authorization scope.
-4. Results are fused, deduplicated, and reranked.
+4. Results are fused with deterministic RRF and deduplicated. No reranker is enabled because the
+   Sprint 1 evaluation does not yet demonstrate enough benefit to pay its latency/memory cost.
 5. Context is packed within a measured token budget.
 6. The generation model produces a structured answer referencing source identifiers.
 7. Citations are validated and the answer streams to the browser.
 8. Retrieval, model, latency, and feedback signals are recorded without logging private document content by default.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant UI as Next.js
+    participant API as FastAPI
+    participant DB as PostgreSQL/pgvector
+    participant LLM as Answer provider
+    User->>UI: Ask in Persian or English
+    UI->>API: POST question, accept SSE
+    API->>DB: authorize conversation/collection
+    API->>DB: dense + lexical search over READY versions
+    API->>API: RRF → deduplicate → context budget
+    API->>LLM: untrusted evidence blocks + question
+    LLM-->>API: answer + backend evidence IDs
+    API->>API: validate every citation ID
+    API->>DB: persist run, answer, citations, timing
+    API-->>UI: answer/citation/completion SSE events
+```
+
+## Process and health boundaries
+
+`app.entrypoints.api` composes the HTTP process and `app.entrypoints.worker` composes Celery tasks.
+`GET /api/v1/health` is liveness and does not touch dependencies. `GET /api/v1/ready` checks
+PostgreSQL, Redis, and MinIO independently and returns a safe 503 envelope if any required
+dependency cannot serve traffic.
 
 ## Dependency rule
 

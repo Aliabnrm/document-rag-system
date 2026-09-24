@@ -1,0 +1,49 @@
+{
+  "report_type": "measured_operational_attempts",
+  "measured_at": "2026-09-24T08:30:00Z",
+  "hardware": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "chip": "Apple M2",
+    "cpu_count": 8,
+    "memory_gib": 8,
+    "ollama_version": "0.15.5"
+  },
+  "attempts": [
+    {
+      "model": "qwen2.5:0.5b",
+      "digest": "a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67",
+      "parameter_size": "494.03M",
+      "quantization": "Q4_K_M",
+      "context_length": 2048,
+      "loaded_size_vram_bytes": 730025472,
+      "outcome": "completed_40_question_evaluation",
+      "quality_report": "sprint-1-multilingual-minilm-qwen2.5-0.5b.json",
+      "decision": "rejected_for_public_quality"
+    },
+    {
+      "model": "qwen2.5:1.5b",
+      "outcome": "download_terminated_before_model_registration",
+      "quality_metrics": null,
+      "decision": "retry_with_stable_runtime_before_acceptance"
+    },
+    {
+      "model": "qwen2.5-coder:7b",
+      "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+      "parameter_size": "7.6B",
+      "quantization": "Q4_K_M",
+      "context_length": 2048,
+      "loaded_size_vram_bytes": 4806766592,
+      "smoke_cold_load_ms": 67345.095208,
+      "smoke_total_latency_ms": 91760.539,
+      "outcome": "full_evaluation_not_completed_within_ordinary_provider_timeout",
+      "quality_metrics": null,
+      "decision": "rejected_as_constrained_local_default"
+    }
+  ],
+  "notes": [
+    "Failed or incomplete runs are not converted into quality scores.",
+    "The 7B model is a coder variant already present on the machine, not the preferred generator candidate.",
+    "No model weights or runtime caches are stored in Git."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "dataset_version": "sprint-1-v1",
+  "chunker_version": "boundary-token-v1",
+  "pipeline_version": "ingestion-v1",
+  "chunk_size_tokens": 64,
+  "chunk_overlap_tokens": 12,
+  "dense_k": 12,
+  "lexical_k": 12,
+  "final_k": 6,
+  "context_token_budget": 512,
+  "rrf_rank_constant": 60,
+  "documents": [
+    "fa-company.txt",
+    "fa-university.txt",
+    "en-handbook.txt",
+    "en-safety.txt"
+  ]
+}

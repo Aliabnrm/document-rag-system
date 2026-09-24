@@ -60,9 +60,24 @@ jobs:
           cache-dependency-glob: backend/uv.lock
       - name: Install dependencies
         run: uv sync --locked --dev
+      - name: Start integration services
+        working-directory: .
+        run: docker compose -f infra/compose.yaml up -d --wait
+      - name: Apply database migrations
+        run: uv run alembic upgrade head
+      - name: Verify migration metadata
+        run: uv run alembic check
       - name: Lint
         run: uv run ruff check .
       - name: Type-check
         run: uv run mypy src
       - name: Test
         run: uv run pytest
+      - name: Show integration service logs on failure
+        if: failure()
+        working-directory: .
+        run: docker compose -f infra/compose.yaml logs --tail=200
+      - name: Stop integration services
+        if: always()
+        working-directory: .
+        run: docker compose -f infra/compose.yaml down

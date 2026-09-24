@@ -1,0 +1,1835 @@
+{
+  "report_type": "measured_baseline",
+  "measured_at": "2026-09-24T08:18:04.201673+00:00",
+  "dataset": "sprint-1-v1.jsonl",
+  "dataset_size": 40,
+  "config": {
+    "dataset_version": "sprint-1-v1",
+    "chunker_version": "boundary-token-v1",
+    "pipeline_version": "ingestion-v1",
+    "chunk_size_tokens": 64,
+    "chunk_overlap_tokens": 12,
+    "dense_k": 12,
+    "lexical_k": 12,
+    "final_k": 6,
+    "context_token_budget": 512,
+    "rrf_rank_constant": 60,
+    "documents": [
+      "fa-company.txt",
+      "fa-university.txt",
+      "en-handbook.txt",
+      "en-safety.txt"
+    ]
+  },
+  "providers": {
+    "embedding": {
+      "provider": "fastembed",
+      "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "revision": "faf4aa4225822f3bc6376869cb1164e8e3feedd0",
+      "dimensions": 384,
+      "maximum_input_tokens": 512,
+      "runtime": "fastembed-onnx",
+      "throughput_chunks_per_second": 61.632,
+      "fixture_chunks": 12
+    },
+    "answer": {
+      "provider": "ollama",
+      "model": "qwen2.5:0.5b",
+      "runtime": {
+        "version": "0.15.5",
+        "digest": "a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67",
+        "size_bytes": 397821319,
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "494.03M",
+          "quantization_level": "Q4_K_M"
+        },
+        "loaded_size_vram_bytes": 730025472,
+        "context_length": 2048
+      }
+    }
+  },
+  "hardware": {
+    "system": "Darwin",
+    "release": "27.0.0",
+    "machine": "arm64",
+    "cpu_count": 8,
+    "memory_gib": 8.0,
+    "python": "3.13.14",
+    "fastembed": "0.8.1",
+    "onnxruntime": "1.30.0"
+  },
+  "summary": {
+    "retrieval_recall_at_k": 0.944444,
+    "mrr": 0.859722,
+    "citation_identifier_validity": 1.0,
+    "citation_support": 0.1,
+    "groundedness_proxy": 0.1,
+    "answer_relevance": 0.325,
+    "abstention_accuracy": 0.85,
+    "median_time_to_first_token_ms": 431.615,
+    "median_total_latency_ms": 431.63
+  },
+  "by_category": {
+    "adversarial_document": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.0,
+      "groundedness_proxy": 0.0,
+      "answer_relevance": 0.0,
+      "abstention_accuracy": 0.0,
+      "median_time_to_first_token_ms": 430.375,
+      "median_total_latency_ms": 430.394
+    },
+    "ambiguous": {
+      "retrieval_recall_at_k": null,
+      "mrr": null,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 1.0,
+      "groundedness_proxy": 1.0,
+      "answer_relevance": 0.0,
+      "abstention_accuracy": 0.0,
+      "median_time_to_first_token_ms": 451.24,
+      "median_total_latency_ms": 451.256
+    },
+    "cross_lingual": {
+      "retrieval_recall_at_k": 0.666667,
+      "mrr": 0.325,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.0,
+      "groundedness_proxy": 0.0,
+      "answer_relevance": 0.166667,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 390.919,
+      "median_total_latency_ms": 390.94
+    },
+    "direct_fact": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.0,
+      "groundedness_proxy": 0.0,
+      "answer_relevance": 0.714286,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 669.534,
+      "median_total_latency_ms": 669.558
+    },
+    "exact_date": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 0.75,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.0,
+      "groundedness_proxy": 0.0,
+      "answer_relevance": 0.25,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 499.761,
+      "median_total_latency_ms": 499.785
+    },
+    "exact_identifier": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.0,
+      "groundedness_proxy": 0.0,
+      "answer_relevance": 0.6,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 418.353,
+      "median_total_latency_ms": 418.365
+    },
+    "exact_number": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.0,
+      "groundedness_proxy": 0.0,
+      "answer_relevance": 0.5,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 391.908,
+      "median_total_latency_ms": 391.922
+    },
+    "multiple_passages": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.0,
+      "groundedness_proxy": 0.0,
+      "answer_relevance": 0.5,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 643.133,
+      "median_total_latency_ms": 643.196
+    },
+    "semantic_paraphrase": {
+      "retrieval_recall_at_k": 1.0,
+      "mrr": 1.0,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 0.0,
+      "groundedness_proxy": 0.0,
+      "answer_relevance": 0.0,
+      "abstention_accuracy": 1.0,
+      "median_time_to_first_token_ms": 373.317,
+      "median_total_latency_ms": 373.329
+    },
+    "unanswerable": {
+      "retrieval_recall_at_k": null,
+      "mrr": null,
+      "citation_identifier_validity": 1.0,
+      "citation_support": 1.0,
+      "groundedness_proxy": 1.0,
+      "answer_relevance": 0.0,
+      "abstention_accuracy": 0.0,
+      "median_time_to_first_token_ms": 450.715,
+      "median_total_latency_ms": 450.727
+    }
+  },
+  "results": [
+    {
+      "id": "q01",
+      "category": "direct_fact",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 3274352208,
+        "load_duration_ns": 1184993333,
+        "prompt_eval_duration_ns": 1318394958,
+        "eval_duration_ns": 690025044
+      },
+      "input_tokens": 1073,
+      "output_tokens": 83,
+      "time_to_first_token_ms": 3328.964,
+      "total_latency_ms": 3329.075
+    },
+    {
+      "id": "q02",
+      "category": "direct_fact",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 672099500,
+        "load_duration_ns": 67466625,
+        "prompt_eval_duration_ns": 293606167,
+        "eval_duration_ns": 279929500
+      },
+      "input_tokens": 1018,
+      "output_tokens": 35,
+      "time_to_first_token_ms": 696.979,
+      "total_latency_ms": 696.999
+    },
+    {
+      "id": "q03",
+      "category": "exact_identifier",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 411504209,
+        "load_duration_ns": 66610209,
+        "prompt_eval_duration_ns": 284946042,
+        "eval_duration_ns": 50071750
+      },
+      "input_tokens": 1036,
+      "output_tokens": 7,
+      "time_to_first_token_ms": 418.353,
+      "total_latency_ms": 418.365
+    },
+    {
+      "id": "q04",
+      "category": "exact_date",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 502538417,
+        "load_duration_ns": 70793709,
+        "prompt_eval_duration_ns": 287254125,
+        "eval_duration_ns": 133203750
+      },
+      "input_tokens": 1024,
+      "output_tokens": 17,
+      "time_to_first_token_ms": 509.002,
+      "total_latency_ms": 509.016
+    },
+    {
+      "id": "q05",
+      "category": "semantic_paraphrase",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 434496375,
+        "load_duration_ns": 57580458,
+        "prompt_eval_duration_ns": 301299417,
+        "eval_duration_ns": 66371333
+      },
+      "input_tokens": 928,
+      "output_tokens": 9,
+      "time_to_first_token_ms": 441.974,
+      "total_latency_ms": 442.008
+    },
+    {
+      "id": "q06",
+      "category": "semantic_paraphrase",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 386945709,
+        "load_duration_ns": 55528459,
+        "prompt_eval_duration_ns": 291516583,
+        "eval_duration_ns": 32904208
+      },
+      "input_tokens": 1038,
+      "output_tokens": 5,
+      "time_to_first_token_ms": 395.606,
+      "total_latency_ms": 395.616
+    },
+    {
+      "id": "q07",
+      "category": "exact_number",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 339845417,
+        "load_duration_ns": 53619458,
+        "prompt_eval_duration_ns": 246497792,
+        "eval_duration_ns": 33324416
+      },
+      "input_tokens": 944,
+      "output_tokens": 5,
+      "time_to_first_token_ms": 348.042,
+      "total_latency_ms": 348.055
+    },
+    {
+      "id": "q08",
+      "category": "exact_identifier",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 737637084,
+        "load_duration_ns": 59646459,
+        "prompt_eval_duration_ns": 301858417,
+        "eval_duration_ns": 350388082
+      },
+      "input_tokens": 917,
+      "output_tokens": 42,
+      "time_to_first_token_ms": 743.891,
+      "total_latency_ms": 743.911
+    },
+    {
+      "id": "q09",
+      "category": "cross_lingual",
+      "language": "en",
+      "retrieval_recall_at_k": 0,
+      "reciprocal_rank": 0.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 296899583,
+        "load_duration_ns": 56447042,
+        "prompt_eval_duration_ns": 209619500,
+        "eval_duration_ns": 24593542
+      },
+      "input_tokens": 635,
+      "output_tokens": 4,
+      "time_to_first_token_ms": 303.302,
+      "total_latency_ms": 303.316
+    },
+    {
+      "id": "q10",
+      "category": "cross_lingual",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 0.5,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 408421167,
+        "load_duration_ns": 56266958,
+        "prompt_eval_duration_ns": 327066458,
+        "eval_duration_ns": 17867874
+      },
+      "input_tokens": 982,
+      "output_tokens": 3,
+      "time_to_first_token_ms": 421.225,
+      "total_latency_ms": 421.257
+    },
+    {
+      "id": "q11",
+      "category": "adversarial_document",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": false,
+      "abstained": true,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 515571375,
+        "load_duration_ns": 109072042,
+        "prompt_eval_duration_ns": 313319208,
+        "eval_duration_ns": 51849167
+      },
+      "input_tokens": 879,
+      "output_tokens": 7,
+      "time_to_first_token_ms": 527.892,
+      "total_latency_ms": 527.911
+    },
+    {
+      "id": "q12",
+      "category": "multiple_passages",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 812590583,
+        "load_duration_ns": 69907542,
+        "prompt_eval_duration_ns": 398845542,
+        "eval_duration_ns": 299607540
+      },
+      "input_tokens": 1128,
+      "output_tokens": 34,
+      "time_to_first_token_ms": 853.546,
+      "total_latency_ms": 853.658
+    },
+    {
+      "id": "q13",
+      "category": "direct_fact",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 490378500,
+        "load_duration_ns": 106157291,
+        "prompt_eval_duration_ns": 323276792,
+        "eval_duration_ns": 42825334
+      },
+      "input_tokens": 911,
+      "output_tokens": 6,
+      "time_to_first_token_ms": 532.821,
+      "total_latency_ms": 532.842
+    },
+    {
+      "id": "q14",
+      "category": "exact_date",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 0.5,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 468175125,
+        "load_duration_ns": 72640042,
+        "prompt_eval_duration_ns": 343101417,
+        "eval_duration_ns": 40830958
+      },
+      "input_tokens": 1005,
+      "output_tokens": 6,
+      "time_to_first_token_ms": 490.52,
+      "total_latency_ms": 490.554
+    },
+    {
+      "id": "q15",
+      "category": "direct_fact",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 658682916,
+        "load_duration_ns": 114786583,
+        "prompt_eval_duration_ns": 333766708,
+        "eval_duration_ns": 189504084
+      },
+      "input_tokens": 975,
+      "output_tokens": 24,
+      "time_to_first_token_ms": 669.534,
+      "total_latency_ms": 669.558
+    },
+    {
+      "id": "q16",
+      "category": "exact_identifier",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 421940708,
+        "load_duration_ns": 61232792,
+        "prompt_eval_duration_ns": 304723709,
+        "eval_duration_ns": 41863374
+      },
+      "input_tokens": 929,
+      "output_tokens": 6,
+      "time_to_first_token_ms": 430.509,
+      "total_latency_ms": 430.526
+    },
+    {
+      "id": "q17",
+      "category": "semantic_paraphrase",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 433608000,
+        "load_duration_ns": 77465166,
+        "prompt_eval_duration_ns": 330941875,
+        "eval_duration_ns": 16872833
+      },
+      "input_tokens": 1094,
+      "output_tokens": 3,
+      "time_to_first_token_ms": 441.963,
+      "total_latency_ms": 441.977
+    },
+    {
+      "id": "q18",
+      "category": "exact_number",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 436212750,
+        "load_duration_ns": 55087834,
+        "prompt_eval_duration_ns": 352927167,
+        "eval_duration_ns": 19106208
+      },
+      "input_tokens": 1128,
+      "output_tokens": 3,
+      "time_to_first_token_ms": 445.596,
+      "total_latency_ms": 445.64
+    },
+    {
+      "id": "q19",
+      "category": "exact_number",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 418236959,
+        "load_duration_ns": 63376542,
+        "prompt_eval_duration_ns": 301517584,
+        "eval_duration_ns": 43901167
+      },
+      "input_tokens": 900,
+      "output_tokens": 6,
+      "time_to_first_token_ms": 429.022,
+      "total_latency_ms": 429.038
+    },
+    {
+      "id": "q20",
+      "category": "cross_lingual",
+      "language": "en",
+      "retrieval_recall_at_k": 0,
+      "reciprocal_rank": 0.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 302461208,
+        "load_duration_ns": 69356250,
+        "prompt_eval_duration_ns": 208645667,
+        "eval_duration_ns": 16692125
+      },
+      "input_tokens": 635,
+      "output_tokens": 3,
+      "time_to_first_token_ms": 313.217,
+      "total_latency_ms": 313.23
+    },
+    {
+      "id": "q21",
+      "category": "direct_fact",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 725502416,
+        "load_duration_ns": 151695583,
+        "prompt_eval_duration_ns": 513712250,
+        "eval_duration_ns": 50748501
+      },
+      "input_tokens": 638,
+      "output_tokens": 7,
+      "time_to_first_token_ms": 735.531,
+      "total_latency_ms": 735.553
+    },
+    {
+      "id": "q22",
+      "category": "direct_fact",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 323911250,
+        "load_duration_ns": 56995167,
+        "prompt_eval_duration_ns": 173995250,
+        "eval_duration_ns": 81296790
+      },
+      "input_tokens": 749,
+      "output_tokens": 7,
+      "time_to_first_token_ms": 334.043,
+      "total_latency_ms": 334.066
+    },
+    {
+      "id": "q23",
+      "category": "exact_identifier",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 277221292,
+        "load_duration_ns": 60986209,
+        "prompt_eval_duration_ns": 158518833,
+        "eval_duration_ns": 48798625
+      },
+      "input_tokens": 634,
+      "output_tokens": 7,
+      "time_to_first_token_ms": 286.064,
+      "total_latency_ms": 286.076
+    },
+    {
+      "id": "q24",
+      "category": "exact_date",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 381378584,
+        "load_duration_ns": 56505917,
+        "prompt_eval_duration_ns": 231287667,
+        "eval_duration_ns": 84273042
+      },
+      "input_tokens": 790,
+      "output_tokens": 11,
+      "time_to_first_token_ms": 388.281,
+      "total_latency_ms": 388.305
+    },
+    {
+      "id": "q25",
+      "category": "semantic_paraphrase",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 270163000,
+        "load_duration_ns": 53507667,
+        "prompt_eval_duration_ns": 194724375,
+        "eval_duration_ns": 16664917
+      },
+      "input_tokens": 638,
+      "output_tokens": 3,
+      "time_to_first_token_ms": 276.879,
+      "total_latency_ms": 276.89
+    },
+    {
+      "id": "q26",
+      "category": "exact_number",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 348546750,
+        "load_duration_ns": 54610542,
+        "prompt_eval_duration_ns": 262425209,
+        "eval_duration_ns": 24700917
+      },
+      "input_tokens": 889,
+      "output_tokens": 4,
+      "time_to_first_token_ms": 354.793,
+      "total_latency_ms": 354.805
+    },
+    {
+      "id": "q27",
+      "category": "multiple_passages",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 426326875,
+        "load_duration_ns": 54244542,
+        "prompt_eval_duration_ns": 197321458,
+        "eval_duration_ns": 163104123
+      },
+      "input_tokens": 643,
+      "output_tokens": 21,
+      "time_to_first_token_ms": 432.72,
+      "total_latency_ms": 432.734
+    },
+    {
+      "id": "q28",
+      "category": "cross_lingual",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 391371708,
+        "load_duration_ns": 55754583,
+        "prompt_eval_duration_ns": 302293708,
+        "eval_duration_ns": 26504333
+      },
+      "input_tokens": 877,
+      "output_tokens": 4,
+      "time_to_first_token_ms": 398.285,
+      "total_latency_ms": 398.298
+    },
+    {
+      "id": "q29",
+      "category": "cross_lingual",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 0.2,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 463418667,
+        "load_duration_ns": 59271709,
+        "prompt_eval_duration_ns": 379425875,
+        "eval_duration_ns": 17374292
+      },
+      "input_tokens": 1096,
+      "output_tokens": 3,
+      "time_to_first_token_ms": 470.287,
+      "total_latency_ms": 470.304
+    },
+    {
+      "id": "q30",
+      "category": "adversarial_document",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": false,
+      "abstained": true,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 325720708,
+        "load_duration_ns": 59607125,
+        "prompt_eval_duration_ns": 208066167,
+        "eval_duration_ns": 49223749
+      },
+      "input_tokens": 636,
+      "output_tokens": 7,
+      "time_to_first_token_ms": 332.859,
+      "total_latency_ms": 332.877
+    },
+    {
+      "id": "q31",
+      "category": "direct_fact",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 319308000,
+        "load_duration_ns": 53877167,
+        "prompt_eval_duration_ns": 234999542,
+        "eval_duration_ns": 24426958
+      },
+      "input_tokens": 725,
+      "output_tokens": 4,
+      "time_to_first_token_ms": 325.92,
+      "total_latency_ms": 325.939
+    },
+    {
+      "id": "q32",
+      "category": "semantic_paraphrase",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 293203292,
+        "load_duration_ns": 60829375,
+        "prompt_eval_duration_ns": 209276208,
+        "eval_duration_ns": 16680709
+      },
+      "input_tokens": 741,
+      "output_tokens": 3,
+      "time_to_first_token_ms": 300.512,
+      "total_latency_ms": 300.525
+    },
+    {
+      "id": "q33",
+      "category": "exact_date",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 0.5,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 532744291,
+        "load_duration_ns": 57330541,
+        "prompt_eval_duration_ns": 301142751,
+        "eval_duration_ns": 161740749
+      },
+      "input_tokens": 636,
+      "output_tokens": 21,
+      "time_to_first_token_ms": 539.047,
+      "total_latency_ms": 539.062
+    },
+    {
+      "id": "q34",
+      "category": "exact_identifier",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": true,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 355369292,
+        "load_duration_ns": 68760042,
+        "prompt_eval_duration_ns": 239064625,
+        "eval_duration_ns": 40564124
+      },
+      "input_tokens": 634,
+      "output_tokens": 6,
+      "time_to_first_token_ms": 361.856,
+      "total_latency_ms": 361.868
+    },
+    {
+      "id": "q35",
+      "category": "cross_lingual",
+      "language": "fa",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 0.25,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 375521750,
+        "load_duration_ns": 58144000,
+        "prompt_eval_duration_ns": 294801875,
+        "eval_duration_ns": 16604834
+      },
+      "input_tokens": 861,
+      "output_tokens": 3,
+      "time_to_first_token_ms": 383.553,
+      "total_latency_ms": 383.581
+    },
+    {
+      "id": "q36",
+      "category": "semantic_paraphrase",
+      "language": "en",
+      "retrieval_recall_at_k": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": false,
+      "groundedness_proxy": false,
+      "answer_relevance": false,
+      "abstention_correct": true,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 344045208,
+        "load_duration_ns": 54415833,
+        "prompt_eval_duration_ns": 212708666,
+        "eval_duration_ns": 68565125
+      },
+      "input_tokens": 638,
+      "output_tokens": 9,
+      "time_to_first_token_ms": 351.028,
+      "total_latency_ms": 351.042
+    },
+    {
+      "id": "q37",
+      "category": "unanswerable",
+      "language": "fa",
+      "retrieval_recall_at_k": null,
+      "reciprocal_rank": null,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": false,
+      "abstention_correct": false,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 444322667,
+        "load_duration_ns": 55104125,
+        "prompt_eval_duration_ns": 348785125,
+        "eval_duration_ns": 33427791
+      },
+      "input_tokens": 1017,
+      "output_tokens": 5,
+      "time_to_first_token_ms": 450.715,
+      "total_latency_ms": 450.727
+    },
+    {
+      "id": "q38",
+      "category": "unanswerable",
+      "language": "en",
+      "retrieval_recall_at_k": null,
+      "reciprocal_rank": null,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": false,
+      "abstention_correct": false,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 447295458,
+        "load_duration_ns": 56556583,
+        "prompt_eval_duration_ns": 264194500,
+        "eval_duration_ns": 115433498
+      },
+      "input_tokens": 786,
+      "output_tokens": 15,
+      "time_to_first_token_ms": 453.987,
+      "total_latency_ms": 454.002
+    },
+    {
+      "id": "q39",
+      "category": "unanswerable",
+      "language": "fa",
+      "retrieval_recall_at_k": null,
+      "reciprocal_rank": null,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt",
+        "fa-company.txt",
+        "fa-university.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": false,
+      "abstention_correct": false,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 430321167,
+        "load_duration_ns": 56046042,
+        "prompt_eval_duration_ns": 341167958,
+        "eval_duration_ns": 24898917
+      },
+      "input_tokens": 974,
+      "output_tokens": 4,
+      "time_to_first_token_ms": 447.16,
+      "total_latency_ms": 447.172
+    },
+    {
+      "id": "q40",
+      "category": "ambiguous",
+      "language": "en",
+      "retrieval_recall_at_k": null,
+      "reciprocal_rank": null,
+      "retrieved_evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "retrieved_documents": [
+        "en-handbook.txt",
+        "en-safety.txt"
+      ],
+      "citation_identifier_valid": true,
+      "citation_support": true,
+      "groundedness_proxy": true,
+      "answer_relevance": false,
+      "abstention_correct": false,
+      "abstained": false,
+      "generation_metadata": {
+        "provider": "ollama",
+        "model": "qwen2.5:0.5b",
+        "prompt_version": "grounded-answer-v1",
+        "runtime": "ollama",
+        "done_reason": "stop",
+        "total_duration_ns": 444816541,
+        "load_duration_ns": 53921375,
+        "prompt_eval_duration_ns": 216244375,
+        "eval_duration_ns": 162145416
+      },
+      "input_tokens": 632,
+      "output_tokens": 21,
+      "time_to_first_token_ms": 451.24,
+      "total_latency_ms": 451.256
+    }
+  ],
+  "notes": [
+    "Lexical scores in this portable runner use normalized token overlap; production uses PostgreSQL full-text search.",
+    "Groundedness is an automated citation-support proxy, not a human judge score.",
+    "No release threshold is inferred from this first baseline."
+  ]
+}

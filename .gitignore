@@ -21,6 +21,7 @@ backend/.ruff_cache/
 backend/.mypy_cache/
 backend/.coverage
 backend/htmlcov/
+backend/celerybeat-schedule*
 **/__pycache__/
 *.py[cod]
 

@@ -1,6 +1,8 @@
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.entrypoints.api import create_app
+
+app = create_app()
 
 
 def test_health_contract() -> None:

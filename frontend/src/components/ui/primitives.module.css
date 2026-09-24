@@ -1,0 +1,103 @@
+.button {
+  align-items: center;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  gap: var(--space-2);
+  justify-content: center;
+  min-block-size: var(--control-height);
+  padding-inline: var(--space-5);
+  transition:
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-disabled);
+}
+
+.primary {
+  background: var(--color-action);
+  color: var(--color-on-action);
+}
+
+.primary:not(:disabled):hover {
+  background: var(--color-action-hover);
+}
+
+.secondary {
+  background: var(--color-surface);
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.secondary:not(:disabled):hover,
+.quiet:not(:disabled):hover {
+  background: var(--color-surface-muted);
+}
+
+.quiet {
+  background: transparent;
+  color: var(--color-text-secondary);
+  padding-inline: var(--space-3);
+}
+
+.danger {
+  background: var(--color-danger-soft);
+  color: var(--color-danger-text);
+}
+
+.compact {
+  min-block-size: var(--control-height-compact);
+  padding-inline: var(--space-3);
+}
+
+.badge {
+  align-items: center;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  gap: var(--space-2);
+  min-block-size: var(--space-7);
+  padding-inline: var(--space-3);
+  white-space: nowrap;
+}
+
+.badgeDot {
+  background: currentColor;
+  block-size: var(--space-2);
+  border-radius: var(--radius-pill);
+  inline-size: var(--space-2);
+}
+
+.badge_neutral {
+  background: var(--color-neutral-soft);
+  color: var(--color-text-secondary);
+}
+
+.badge_progress {
+  background: var(--color-info-soft);
+  color: var(--color-info-text);
+}
+
+.badge_success {
+  background: var(--color-success-soft);
+  color: var(--color-success-text);
+}
+
+.badge_danger {
+  background: var(--color-danger-soft);
+  color: var(--color-danger-text);
+}
+
+.badge_warning {
+  background: var(--color-warning-soft);
+  color: var(--color-warning-text);
+}

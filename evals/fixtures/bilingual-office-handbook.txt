@@ -1,0 +1,33 @@
+Bilingual Office Handbook — راهنمای دوزبانه دفتر
+
+English
+
+The Navid office is open from 8:30 AM to 5:00 PM, Sunday through Thursday.
+The office is closed on Friday and Saturday.
+
+Employees receive 24 days of paid annual leave each calendar year.
+Annual leave requests must be submitted to the employee's manager at least three working days in advance.
+
+Remote work is allowed on Mondays and Wednesdays.
+Employees working remotely must be available in the team chat from 9:00 AM to 4:00 PM.
+
+The lunch break lasts 45 minutes and may be taken between 12:00 PM and 2:00 PM.
+
+For urgent technical support, employees should email support@navid.example.
+The emergency assembly point is the north parking area beside the blue gate.
+
+فارسی
+
+دفتر نوید از یکشنبه تا پنج‌شنبه، از ساعت ۸:۳۰ صبح تا ۵ عصر باز است.
+دفتر در روزهای جمعه و شنبه تعطیل است.
+
+کارکنان در هر سال تقویمی ۲۴ روز مرخصی سالانه با حقوق دارند.
+درخواست مرخصی سالانه باید حداقل سه روز کاری زودتر برای مدیر کارمند ارسال شود.
+
+دورکاری در روزهای دوشنبه و چهارشنبه مجاز است.
+کارکنانی که دورکاری می‌کنند باید از ساعت ۹ صبح تا ۴ عصر در گفت‌وگوی تیمی در دسترس باشند.
+
+مدت زمان استراحت ناهار ۴۵ دقیقه است و می‌توان آن را بین ساعت ۱۲ ظهر تا ۲ بعدازظهر استفاده کرد.
+
+برای پشتیبانی فنی فوری، کارکنان باید به نشانی support@navid.example ایمیل بزنند.
+محل تجمع اضطراری، پارکینگ شمالی کنار دروازه آبی است.
