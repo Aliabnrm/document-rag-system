@@ -5,6 +5,7 @@ from app.modules.conversations.application.answering import (
     CitationSuggestion,
     GenerationCompleted,
     StreamEvent,
+    abstention_answer,
     validate_citation_ids,
 )
 from app.modules.conversations.application.conversations import (
@@ -33,5 +34,6 @@ __all__ = [
     "PersistedCitation",
     "PersistedMessage",
     "StreamEvent",
+    "abstention_answer",
     "validate_citation_ids",
 ]

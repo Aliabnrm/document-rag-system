@@ -140,6 +140,21 @@ cleanup job قبل از پاسخ API ثبت می‌شوند؛ همان chunk ف�
 
 ## شکست‌ها و درس‌ها
 
+- abstention قبلاً بیشتر به متن stream و یک badge کوچک وابسته بود و API تاریخچه تصمیم مدل را
+  برنمی‌گرداند؛ بنابراین پاسخ خالی یا conversation بازشده می‌توانست برای کاربر مبهم باشد. اکنون
+  backend یک پیام fallback روشن را persist می‌کند و فیلد `abstained` از وضعیت RagRun در تاریخچه
+  برمی‌گردد. UI حتی با متن خالی یک حالت مستقل نشان می‌دهد: پاسخ در اسناد پیدا نشد، سؤال را با
+  عبارت دقیق‌تر امتحان کنید یا سند مرتبط اضافه کنید. این UX به‌جای حدس‌زدن، کمبود شاهد را صریح
+  می‌گوید.
+- provider قطعی محیط توسعه نام فایل را با عبارت `According to ...` داخل خود answer قرار می‌داد،
+  درحالی‌که همان منبع جداگانه در citation معتبر ارسال می‌شد. این تکرار مسئولیت متن پاسخ و نمایش
+  منبع را مخلوط می‌کرد. نسخه `extractive-overlap-v2` فقط جملهٔ پشتیبان را به‌عنوان answer می‌فرستد
+  و نام سند همچنان در citation قابل بازرسی باقی می‌ماند؛ پاسخ‌های تاریخی عمداً بازنویسی نمی‌شوند.
+- مسیرهای JSON از Axios استفاده می‌کردند و Axios به‌صورت مرکزی cookie و CSRF header را می‌فرستاد،
+  اما answer stream به‌دلیل خواندن تدریجی SSE از `fetch` مستقل استفاده می‌کرد. `fetch` در درخواست
+  cross-origin بدون `credentials: include`، session cookie را نفرستاد و پاسخ `401` شد؛ اگر فقط
+  cookie اصلاح می‌شد، نبود `X-CSRF-Token` پاسخ `403` می‌داد. اکنون streaming هر دو بخش قرارداد
+  امنیتی را صریح می‌فرستد و تست request shape جلوی بازگشت این تفاوت را می‌گیرد.
 - اجرای اول مدل واقعی پس از چند ده سؤال timeout شد؛ نبود سقف خروجی می‌توانست generation را runaway
   کند. اکنون `num_predict`، timeout و ثبت provider failure وجود دارد.
 - streaming نمایشی می‌توانست TTFT را اشتباه نشان دهد؛ اکنون delta مستقیماً از stream واقعی provider
@@ -147,6 +162,13 @@ cleanup job قبل از پاسخ API ثبت می‌شوند؛ همان chunk ف�
 - مدل کوچک در RAM جا شد اما کیفیت grounded کافی نبود؛ feasibility فقط memory نیست.
 - citation دارای foreign key محدودکننده بود؛ cleanup باید اول citation را حذف کند و بعد chunk را.
   این ترتیب نمونه‌ای از dependency-safe deletion است.
+- اجرای واقعی Celery نشان داد وجود جدول در PostgreSQL کافی نیست: هر process باید همه مدل‌های
+  SQLAlchemy را در registry خودش بارگذاری کند. API به‌طور اتفاقی از مسیر routeها مدل `users` را
+  import می‌کرد، اما worker مستقل این کار را نمی‌کرد و cleanup پیش از claim با
+  `NoReferencedTableError` متوقف می‌شد. اکنون ساخت هر `Database` رجیستری canonical را بارگذاری
+  می‌کند و یک تست در process تازه کل گراف foreign key را resolve می‌کند. لاگ‌های cleanup نیز فقط
+  شناسه هم‌بستگی، نوع منبع، مدت، error code و نوع exception را ثبت می‌کنند؛ نه نام فایل، storage
+  key یا متن سند را.
 - مالکیت Auth داخلی یعنی patching، recovery، incident response و تست امنیتی مسئولیت خود پروژه است.
 
 ## واژه‌نامه کوتاه

@@ -57,7 +57,7 @@ class RecordingDeletionDispatcher:
 
 
 def test_create_upload_ingest_ask_and_validate_citation() -> None:
-    settings = Settings(quota_documents_per_user=1, quota_questions_per_day=1)
+    settings = Settings(quota_documents_per_user=1, quota_questions_per_day=2)
     application = create_app(settings)
     dispatcher = RecordingDispatcher()
     deletion_dispatcher = RecordingDeletionDispatcher()
@@ -153,6 +153,15 @@ def test_create_upload_ingest_ask_and_validate_citation() -> None:
         assert '"page_start": 1' in answer_response.text
         assert "لیلا نوری" in answer_response.text
         assert '"abstained": false' in answer_response.text
+        abstention_response = client.post(
+            f"/api/v1/conversations/{conversation_id}/messages:stream",
+            json={"question": "What is the lunar orbital period?", "language": "en"},
+        )
+        assert abstention_response.status_code == 200
+        assert '"abstained": true' in abstention_response.text
+        assert "I could not find an answer" in abstention_response.text
+        assert "event: citations" not in abstention_response.text
+
         question_quota = client.post(
             f"/api/v1/conversations/{conversation_id}/messages:stream",
             json={"question": "What year was Ava founded?", "language": "en"},
@@ -165,9 +174,17 @@ def test_create_upload_ingest_ask_and_validate_citation() -> None:
         )
         assert persisted_messages.status_code == 200
         message_items = persisted_messages.json()["items"]
-        assert [item["role"] for item in message_items] == ["user", "assistant"]
+        assert [item["role"] for item in message_items] == [
+            "user",
+            "assistant",
+            "user",
+            "assistant",
+        ]
         assert message_items[1]["content"]
+        assert message_items[1]["abstained"] is False
         assert message_items[1]["citations"][0]["page_start"] == 1
+        assert message_items[3]["abstained"] is True
+        assert message_items[3]["citations"] == []
         answer_message_id = message_items[1]["id"]
 
         feedback_response = client.post(

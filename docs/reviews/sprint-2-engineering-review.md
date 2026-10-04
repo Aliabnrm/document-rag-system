@@ -23,6 +23,22 @@ The frontend keeps Axios calls in typed API modules, validates unknown finite re
 uses focused TanStack Query hooks for server state, and keeps feature components presentation-led.
 HttpOnly session state is never copied into browser storage.
 
+The answer stream uses browser `fetch` because it consumes incremental SSE frames rather than a
+finite JSON response. It explicitly opts into credentialed CORS and copies the readable,
+session-bound CSRF cookie into `X-CSRF-Token`, matching the same browser security contract as the
+Axios boundary. A request-shape regression test protects both requirements.
+
+The deterministic development/CI generator now returns the selected supporting sentence directly.
+It no longer embeds `According to <filename>` or its Persian equivalent in answer text because the
+same source identity is already delivered through the separately validated citation event. The
+behavior is recorded as `extractive-overlap-v2`; persisted historical answers remain immutable.
+
+Abstention is now a durable presentation state rather than only streamed text. The message-history
+contract derives `abstained` from the completed RAG run, so reopening a conversation preserves the
+decision. The bilingual UI renders a dedicated no-answer result with a plain explanation and two
+safe next steps: ask with more exact terms or add a relevant document. This state renders even if a
+provider returns no displayable answer text, while the backend still persists a localized fallback.
+
 ## Measured decisions
 
 - Argon2id on Apple M2: 64 MiB, time cost 3, parallelism 2; median hash `56.56ms`, verify `57.84ms`.
@@ -51,6 +67,13 @@ Deletion now atomically persists a tombstone and cleanup job. A retryable worker
 objects, citations, chunks, and collection conversations in dependency-safe order, redacts retained
 tombstone metadata, and a periodic reconciler repairs API-to-broker dispatch gaps. Backup expiration
 remains a deployment policy gate and is not conflated with application cleanup.
+
+A local deletion exposed an entrypoint-specific SQLAlchemy registry gap: API route imports happened
+to register the identity tables, while the standalone Celery process did not know the `users` table
+referenced by cleanup jobs. Database session composition now loads the canonical metadata registry
+for every process. A fresh-process regression test resolves the complete foreign-key graph, and
+privacy-bounded cleanup logs distinguish received work, idempotent skips, success, dependency
+failure, and failure-state persistence problems.
 
 Application-owned Auth avoids OAuth cost/provider/regional availability, but transfers credential
 patching, recovery, abuse defense, and incident response to this project. Removing the onboarding

@@ -32,6 +32,7 @@ class PersistedMessage:
     language: str
     created_at: datetime
     citations: tuple[PersistedCitation, ...]
+    abstained: bool
 
 
 @dataclass(frozen=True, slots=True)

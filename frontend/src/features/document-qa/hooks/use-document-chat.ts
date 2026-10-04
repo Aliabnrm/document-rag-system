@@ -50,6 +50,7 @@ export function useDocumentChat({
     content: item.content,
     status: item.role === "assistant" ? "complete" : undefined,
     citations: item.citations,
+    abstained: item.abstained,
   }));
 
   const reset = useCallback(() => {

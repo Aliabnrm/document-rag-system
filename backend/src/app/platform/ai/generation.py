@@ -9,6 +9,7 @@ from app.modules.conversations.application import (
     AnswerDelta,
     CitationSuggestion,
     GenerationCompleted,
+    abstention_answer,
 )
 from app.modules.ingestion.domain import count_tokens, normalize_for_retrieval
 from app.modules.retrieval.application import Evidence
@@ -33,18 +34,14 @@ class DeterministicAnswerGenerator:
     ) -> AsyncIterator[AnswerDelta | CitationSuggestion | GenerationCompleted]:
         selected = _select_overlapping_evidence(question, evidence)
         if selected is None:
-            answer = (
-                "در شواهد بازیابی‌شده، اطلاعات کافی برای پاسخ مطمئن وجود ندارد."
-                if language == "fa"
-                else "The retrieved evidence is not sufficient for a reliable answer."
-            )
+            answer = abstention_answer(language)
             async for event in _stream_text(answer):
                 yield event
             yield GenerationCompleted(
                 abstained=True,
                 model_metadata={
                     "provider": "deterministic",
-                    "model": "extractive-overlap-v1",
+                    "model": "extractive-overlap-v2",
                     "prompt_version": "grounded-answer-v1",
                 },
                 input_tokens=count_tokens(question),
@@ -53,11 +50,7 @@ class DeterministicAnswerGenerator:
             return
 
         supporting_text = _best_supporting_sentence(question, selected.source_text)
-        answer = (
-            f"بر اساس سند «{selected.document_name}»: {supporting_text}"
-            if language == "fa"
-            else f'According to "{selected.document_name}": {supporting_text}'
-        )
+        answer = supporting_text
         async for event in _stream_text(answer):
             yield event
         yield CitationSuggestion(selected.evidence_id)
@@ -65,7 +58,7 @@ class DeterministicAnswerGenerator:
             abstained=False,
             model_metadata={
                 "provider": "deterministic",
-                "model": "extractive-overlap-v1",
+                "model": "extractive-overlap-v2",
                 "prompt_version": "grounded-answer-v1",
             },
             input_tokens=count_tokens(question) + sum(item.token_count for item in evidence),
@@ -261,11 +254,7 @@ def _parse_model_answer(
     abstained = "INSUFFICIENT_EVIDENCE" in answer
     answer = answer.replace("INSUFFICIENT_EVIDENCE", "").strip()
     if not answer:
-        answer = (
-            "در اسناد آماده، شواهد کافی برای پاسخ پیدا نکردم."
-            if language == "fa"
-            else "I could not find enough evidence in the ready documents."
-        )
+        answer = abstention_answer(language)
         abstained = True
     return answer, citation_ids, abstained
 

@@ -33,6 +33,14 @@ class GenerationCompleted:
 GeneratorEvent = AnswerDelta | CitationSuggestion | GenerationCompleted
 
 
+def abstention_answer(language: Literal["fa", "en"]) -> str:
+    return (
+        "پاسخی برای این پرسش در اسناد آماده پیدا نکردم."
+        if language == "fa"
+        else "I could not find an answer to this question in the ready documents."
+    )
+
+
 class AnswerGenerator(Protocol):
     def stream(
         self,
@@ -276,11 +284,7 @@ class AnswerQuestion:
         started: float,
         reason: str,
     ) -> AsyncIterator[StreamEvent]:
-        answer = (
-            "در اسناد آماده، شواهد کافی برای پاسخ به این پرسش پیدا نکردم."
-            if language == "fa"
-            else "I could not find enough evidence in the ready documents to answer this question."
-        )
+        answer = abstention_answer(language)
         yield StreamEvent(event="answer_delta", data={"text": answer})
         completion = GenerationCompleted(
             abstained=True,

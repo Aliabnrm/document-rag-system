@@ -47,7 +47,9 @@ normalized email; duplicate email creation returns the safe `registration_unavai
 - `GET /collections/{id}` returns safe `404` for a foreign/deleted collection.
 - `GET /collections/{id}/conversations?page_size=20&cursor=…` is newest-first cursor pagination.
 - `GET /conversations/{id}/messages?page_size=50&after_position=…` returns exact persisted messages
-  and citations in position order; reopening never regenerates an answer.
+  and citations in position order; reopening never regenerates an answer. Every message includes
+  `abstained`; it is `true` only for an assistant response that deliberately declined to answer
+  because the ready documents did not provide sufficient evidence.
 
 ## Feedback and deletion
 

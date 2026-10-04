@@ -151,7 +151,16 @@ class SqlAlchemyConversationRepository:
         ).all()
         answer_ids = [item.id for item in messages if item.role == "assistant"]
         citations_by_message: dict[UUID, list[PersistedCitation]] = {}
+        abstained_answer_ids: set[UUID] = set()
         if answer_ids:
+            abstained_answer_ids = set(
+                await self._session.scalars(
+                    select(RagRunModel.answer_message_id).where(
+                        RagRunModel.answer_message_id.in_(answer_ids),
+                        RagRunModel.status == "abstained",
+                    )
+                )
+            )
             rows = (
                 await self._session.execute(
                     select(CitationModel, DocumentModel.display_name)
@@ -184,6 +193,7 @@ class SqlAlchemyConversationRepository:
                 language=item.language,
                 created_at=item.created_at,
                 citations=tuple(citations_by_message.get(item.id, [])),
+                abstained=item.id in abstained_answer_ids,
             )
             for item in messages
         ]

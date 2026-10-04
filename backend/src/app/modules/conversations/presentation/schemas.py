@@ -43,6 +43,7 @@ class PersistedMessageResponse(BaseModel):
     language: str
     created_at: datetime
     citations: list[PersistedCitationResponse]
+    abstained: bool
 
     @classmethod
     def from_domain(cls, item: PersistedMessage) -> "PersistedMessageResponse":

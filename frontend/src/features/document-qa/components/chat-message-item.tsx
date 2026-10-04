@@ -43,13 +43,29 @@ export function ChatMessageItem({
   return (
     <article className={`${styles.message} ${styles[message.role]}`}>
       <p className={styles.messageRole}>
-        {message.role === "user" ? t("you") : t("groundedAnswer")}
+        {message.role === "user"
+          ? t("you")
+          : message.abstained
+            ? t("evidenceCheckResult")
+            : t("groundedAnswer")}
       </p>
 
-      {message.status === "retrieving" && !message.content ? (
+      {message.abstained ? (
+        <div className={styles.abstention} role="status">
+          <StatusBadge tone="warning">{t("insufficientEvidence")}</StatusBadge>
+          <strong>{t("answerNotFoundTitle")}</strong>
+          <p>{t("answerNotFoundDescription")}</p>
+          <p className={styles.abstentionHint}>{t("answerNotFoundHint")}</p>
+        </div>
+      ) : message.status === "retrieving" && !message.content ? (
         <p className={styles.retrieving}>
           <span className={styles.spinner} aria-hidden="true" />
           {t("retrievingEvidence")}
+        </p>
+      ) : message.status === "streaming" && !message.content ? (
+        <p className={styles.retrieving}>
+          <span className={styles.spinner} aria-hidden="true" />
+          {t("checkingEvidence")}
         </p>
       ) : (
         <p className={styles.messageContent} dir="auto">
@@ -61,10 +77,6 @@ export function ChatMessageItem({
                 : "")}
         </p>
       )}
-
-      {message.abstained ? (
-        <StatusBadge tone="warning">{t("insufficientEvidence")}</StatusBadge>
-      ) : null}
 
       {message.citations?.length ? (
         <div className={styles.citations}>

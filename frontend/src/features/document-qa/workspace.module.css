@@ -677,6 +677,25 @@
   white-space: pre-wrap;
 }
 
+.abstention {
+  background: var(--color-warning-soft);
+  border-radius: var(--radius-sm);
+  color: var(--color-warning-text);
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.abstention strong,
+.abstention p {
+  margin: 0;
+}
+
+.abstentionHint {
+  line-height: var(--line-height-body);
+  opacity: var(--opacity-secondary);
+}
+
 .retrieving {
   align-items: center;
   color: var(--color-text-secondary);

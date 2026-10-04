@@ -30,6 +30,7 @@ export const PersistedMessageSchema = z.object({
   language: z.string(),
   created_at: z.string(),
   citations: CitationListSchema,
+  abstained: z.boolean(),
 });
 
 export const MessageListPageSchema = z.object({
