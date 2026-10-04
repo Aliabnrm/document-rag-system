@@ -1,6 +1,51 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { parseEventStreamBuffer } from "./answer-stream.api";
+import { parseEventStreamBuffer, streamAnswerApi } from "./answer-stream.api";
+
+afterEach(() => {
+  document.cookie = "docqa_csrf_dev=; Max-Age=0; path=/";
+  vi.unstubAllGlobals();
+});
+
+describe("streamAnswerApi", () => {
+  it("sends the session cookie and CSRF header with the streaming request", async () => {
+    document.cookie = "docqa_csrf_dev=csrf-token; path=/";
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      body: null,
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const controller = new AbortController();
+
+    await expect(
+      streamAnswerApi({
+        conversationId: "conversation-1",
+        question: "What is the policy?",
+        language: "en",
+        signal: controller.signal,
+        onEvent: vi.fn(),
+      }),
+    ).rejects.toMatchObject({ code: "stream_unavailable" });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/api/v1/conversations/conversation-1/messages:stream",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Accept: "text/event-stream",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": "csrf-token",
+        },
+        body: JSON.stringify({
+          question: "What is the policy?",
+          language: "en",
+        }),
+        signal: controller.signal,
+      },
+    );
+  });
+});
 
 describe("parseEventStreamBuffer", () => {
   it("keeps incomplete frames and returns typed answer events", () => {

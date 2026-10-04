@@ -21,13 +21,16 @@ type StreamAnswerInput = {
 };
 
 export async function streamAnswerApi(input: StreamAnswerInput): Promise<void> {
+  const csrfToken = readBrowserCookie(runtimeConfig.csrfCookieName);
   const response = await fetch(
     `${runtimeConfig.apiBaseUrl}/api/v1/conversations/${input.conversationId}/messages:stream`,
     {
       method: "POST",
+      credentials: "include",
       headers: {
         Accept: "text/event-stream",
         "Content-Type": "application/json",
+        ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
       },
       body: JSON.stringify({
         question: input.question,
@@ -57,6 +60,22 @@ export async function streamAnswerApi(input: StreamAnswerInput): Promise<void> {
     buffer = parsed.remaining;
     parsed.events.forEach(input.onEvent);
     if (done) break;
+  }
+}
+
+function readBrowserCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const prefix = `${encodeURIComponent(name)}=`;
+  const cookie = document.cookie
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(prefix));
+  if (!cookie) return null;
+  const value = cookie.slice(prefix.length);
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
   }
 }
 
