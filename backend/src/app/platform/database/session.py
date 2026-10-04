@@ -8,10 +8,13 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from app.core.settings import Settings
+from app.platform.database.metadata import metadata as application_metadata
 
 
 class Database:
-    """Own the API process engine and session factory."""
+    """Own a process-local engine/session factory and the complete ORM registry."""
+
+    metadata = application_metadata
 
     def __init__(self, settings: Settings) -> None:
         self.engine: AsyncEngine = create_async_engine(

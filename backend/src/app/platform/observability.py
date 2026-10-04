@@ -16,6 +16,7 @@ _SAFE_FIELDS = (
     "document_version_id",
     "job_id",
     "cleanup_job_id",
+    "resource_type",
     "conversation_id",
     "rag_run_id",
     "method",

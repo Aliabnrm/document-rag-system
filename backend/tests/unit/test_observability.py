@@ -45,3 +45,39 @@ def test_structured_log_serializes_uuid_correlation_fields() -> None:
     payload = json.loads(JsonLogFormatter().format(record))
 
     assert payload["user_id"] == str(user_id)
+
+
+def test_cleanup_log_keeps_operational_fields_without_storage_details() -> None:
+    cleanup_job_id = uuid4()
+    token = bind_observation(cleanup_job_id=cleanup_job_id)
+    try:
+        record = logging.LogRecord(
+            name="app.entrypoints.worker",
+            level=logging.WARNING,
+            pathname=__file__,
+            lineno=1,
+            msg="deletion_cleanup_failed",
+            args=(),
+            exc_info=None,
+        )
+        record.resource_type = "document"
+        record.error_code = "cleanup_dependency_failed"
+        record.error_type = "TimeoutError"
+        record.duration_ms = 12.5
+        record.storage_key = "owners/private/source.pdf"
+
+        payload = json.loads(JsonLogFormatter().format(record))
+    finally:
+        reset_observation(token)
+
+    assert payload == {
+        "timestamp": payload["timestamp"],
+        "level": "warning",
+        "logger": "app.entrypoints.worker",
+        "event": "deletion_cleanup_failed",
+        "cleanup_job_id": str(cleanup_job_id),
+        "resource_type": "document",
+        "duration_ms": 12.5,
+        "error_code": "cleanup_dependency_failed",
+        "error_type": "TimeoutError",
+    }

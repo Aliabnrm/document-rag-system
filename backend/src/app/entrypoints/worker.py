@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from time import perf_counter
 from uuid import UUID
 
 from app.core.settings import get_settings
@@ -13,7 +14,12 @@ from app.modules.ingestion.infrastructure.repository import (
 )
 from app.platform.ai import create_embedding_provider
 from app.platform.database.session import Database
-from app.platform.observability import bind_observation, configure_logging, reset_observation
+from app.platform.observability import (
+    bind_observation,
+    configure_logging,
+    log_event,
+    reset_observation,
+)
 from app.platform.queue.celery import (
     DELETION_CLEANUP_TASK_NAME,
     INGESTION_TASK_NAME,
@@ -124,30 +130,66 @@ async def _cleanup_deleted_resource(*, cleanup_job_id: UUID) -> bool:
     observation = bind_observation(cleanup_job_id=cleanup_job_id)
     database = Database(settings)
     storage = S3SourceStorage(settings)
+    cleanup_started = perf_counter()
     try:
         async with database.session_factory() as session:
             repository = SqlAlchemyCleanupRepository(session)
-            request = await repository.claim(cleanup_job_id)
-            if request is None:
-                return False
             try:
-                logger.info("deletion_cleanup_started")
+                request = await repository.claim(cleanup_job_id)
+                if request is None:
+                    log_event(
+                        logger,
+                        "deletion_cleanup_skipped",
+                        duration_ms=_elapsed_ms(cleanup_started),
+                    )
+                    return False
+                log_event(
+                    logger,
+                    "deletion_cleanup_started",
+                    resource_type=request.resource_type,
+                )
                 for storage_key in request.storage_keys:
                     await storage.delete(key=storage_key)
                 await repository.complete(request)
-                logger.info("deletion_cleanup_succeeded")
+                log_event(
+                    logger,
+                    "deletion_cleanup_succeeded",
+                    resource_type=request.resource_type,
+                    duration_ms=_elapsed_ms(cleanup_started),
+                )
                 return True
             except Exception as error:
                 await session.rollback()
-                await repository.fail(cleanup_job_id, error_code="cleanup_dependency_failed")
-                logger.warning(
+                try:
+                    await repository.fail(
+                        cleanup_job_id,
+                        error_code="cleanup_dependency_failed",
+                    )
+                except Exception as state_error:
+                    await session.rollback()
+                    log_event(
+                        logger,
+                        "deletion_cleanup_failure_state_not_recorded",
+                        level=logging.ERROR,
+                        error_code="cleanup_state_persistence_failed",
+                        error_type=type(state_error).__name__,
+                    )
+                log_event(
+                    logger,
                     "deletion_cleanup_failed",
-                    extra={"error_code": "cleanup_dependency_failed"},
+                    level=logging.WARNING,
+                    error_code="cleanup_dependency_failed",
+                    error_type=type(error).__name__,
+                    duration_ms=_elapsed_ms(cleanup_started),
                 )
                 raise RetryableCleanupError("deletion cleanup dependency failed") from error
     finally:
         await database.dispose()
         reset_observation(observation)
+
+
+def _elapsed_ms(started: float) -> float:
+    return round((perf_counter() - started) * 1000, 3)
 
 
 @celery_app.task(name=RECONCILE_DELETION_TASK_NAME)  # type: ignore[untyped-decorator]
