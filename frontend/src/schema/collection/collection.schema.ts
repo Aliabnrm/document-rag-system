@@ -13,5 +13,11 @@ export const CreateCollectionInputSchema = z.object({
   description: z.string().trim().max(1000).optional(),
 });
 
+export const CollectionListPageSchema = z.object({
+  items: z.array(CollectionSchema),
+  next_cursor: z.string().nullable(),
+});
+
 export type Collection = z.infer<typeof CollectionSchema>;
 export type CreateCollectionInput = z.infer<typeof CreateCollectionInputSchema>;
+export type CollectionListPage = z.infer<typeof CollectionListPageSchema>;

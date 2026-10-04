@@ -40,6 +40,10 @@ class DocumentQueryRepository(Protocol):
 
     async def rollback(self) -> None: ...
 
+    async def tombstone(
+        self, *, owner_id: UUID, collection_id: UUID, document_id: UUID
+    ) -> tuple[str, ...]: ...
+
 
 @dataclass(frozen=True, slots=True)
 class DocumentPage:
@@ -103,6 +107,20 @@ class RetryIngestion:
             await self._repository.mark_retry_dispatch_failed(job_id=summary.job_id)
             await self._repository.commit()
         return await self._repository.get_summary(
+            owner_id=owner_id,
+            collection_id=collection_id,
+            document_id=document_id,
+        )
+
+
+class DeleteDocument:
+    def __init__(self, repository: DocumentQueryRepository) -> None:
+        self._repository = repository
+
+    async def execute(
+        self, *, owner_id: UUID, collection_id: UUID, document_id: UUID
+    ) -> tuple[str, ...]:
+        return await self._repository.tombstone(
             owner_id=owner_id,
             collection_id=collection_id,
             document_id=document_id,

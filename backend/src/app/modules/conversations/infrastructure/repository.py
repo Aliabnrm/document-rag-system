@@ -1,11 +1,16 @@
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.collections.infrastructure.models import CollectionModel
-from app.modules.conversations.application import Conversation, GenerationCompleted
+from app.modules.conversations.application import (
+    Conversation,
+    GenerationCompleted,
+    PersistedCitation,
+    PersistedMessage,
+)
 from app.modules.conversations.application.answering import RunHandle
 from app.modules.conversations.infrastructure.models import (
     CitationModel,
@@ -13,13 +18,29 @@ from app.modules.conversations.infrastructure.models import (
     MessageModel,
     RagRunModel,
 )
+from app.modules.documents.infrastructure.models import DocumentModel, DocumentVersionModel
 from app.modules.retrieval.application import Evidence, RetrievalDiagnostics
+from app.modules.retrieval.infrastructure.models import ChunkModel
 from app.platform.errors import NotFoundError
 
 
 class SqlAlchemyConversationRepository:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+
+    async def get_owned(
+        self, *, owner_id: UUID, conversation_id: UUID
+    ) -> Conversation | None:
+        model = await self._session.scalar(
+            select(ConversationModel)
+            .join(CollectionModel, CollectionModel.id == ConversationModel.collection_id)
+            .where(
+                ConversationModel.id == conversation_id,
+                ConversationModel.owner_id == owner_id,
+                CollectionModel.deleted_at.is_(None),
+            )
+        )
+        return _to_conversation(model) if model is not None else None
 
     async def create(
         self,
@@ -32,6 +53,7 @@ class SqlAlchemyConversationRepository:
             select(CollectionModel.id).where(
                 CollectionModel.id == collection_id,
                 CollectionModel.owner_id == owner_id,
+                CollectionModel.deleted_at.is_(None),
             )
         )
         if collection is None:
@@ -51,6 +73,121 @@ class SqlAlchemyConversationRepository:
             created_at=model.created_at,
         )
 
+    async def list_owned(
+        self,
+        *,
+        owner_id: UUID,
+        collection_id: UUID,
+        limit: int,
+        before_created_at: datetime | None,
+        before_id: UUID | None,
+    ) -> list[Conversation]:
+        collection_exists = await self._session.scalar(
+            select(CollectionModel.id).where(
+                CollectionModel.id == collection_id,
+                CollectionModel.owner_id == owner_id,
+                CollectionModel.deleted_at.is_(None),
+            )
+        )
+        if collection_exists is None:
+            raise NotFoundError("collection_not_found", "errors.collection_not_found")
+        statement = select(ConversationModel).where(
+            ConversationModel.owner_id == owner_id,
+            ConversationModel.collection_id == collection_id,
+            ConversationModel.collection_id.in_(
+                select(CollectionModel.id).where(CollectionModel.deleted_at.is_(None))
+            ),
+        )
+        if before_created_at is not None and before_id is not None:
+            statement = statement.where(
+                (ConversationModel.created_at < before_created_at)
+                | and_(
+                    ConversationModel.created_at == before_created_at,
+                    ConversationModel.id < before_id,
+                )
+            )
+        models = (
+            await self._session.scalars(
+                statement.order_by(
+                    ConversationModel.created_at.desc(), ConversationModel.id.desc()
+                ).limit(limit)
+            )
+        ).all()
+        return [_to_conversation(item) for item in models]
+
+    async def list_messages(
+        self,
+        *,
+        owner_id: UUID,
+        conversation_id: UUID,
+        limit: int,
+        after_position: int | None,
+    ) -> list[PersistedMessage]:
+        conversation_exists = await self._session.scalar(
+            select(ConversationModel.id)
+            .join(CollectionModel, CollectionModel.id == ConversationModel.collection_id)
+            .where(
+                ConversationModel.id == conversation_id,
+                ConversationModel.owner_id == owner_id,
+                CollectionModel.deleted_at.is_(None),
+            )
+        )
+        if conversation_exists is None:
+            raise NotFoundError("conversation_not_found", "errors.conversation_not_found")
+        statement = (
+            select(MessageModel)
+            .join(ConversationModel, ConversationModel.id == MessageModel.conversation_id)
+            .where(
+                ConversationModel.id == conversation_id,
+                ConversationModel.owner_id == owner_id,
+            )
+        )
+        if after_position is not None:
+            statement = statement.where(MessageModel.position > after_position)
+        messages = (
+            await self._session.scalars(
+                statement.order_by(MessageModel.position.asc()).limit(limit)
+            )
+        ).all()
+        answer_ids = [item.id for item in messages if item.role == "assistant"]
+        citations_by_message: dict[UUID, list[PersistedCitation]] = {}
+        if answer_ids:
+            rows = (
+                await self._session.execute(
+                    select(CitationModel, DocumentModel.display_name)
+                    .join(ChunkModel, ChunkModel.id == CitationModel.chunk_id)
+                    .join(
+                        DocumentVersionModel,
+                        DocumentVersionModel.id == ChunkModel.document_version_id,
+                    )
+                    .join(DocumentModel, DocumentModel.id == DocumentVersionModel.document_id)
+                    .where(CitationModel.answer_message_id.in_(answer_ids))
+                    .order_by(CitationModel.answer_message_id, CitationModel.position)
+                )
+            ).all()
+            for citation, display_name in rows:
+                citations_by_message.setdefault(citation.answer_message_id, []).append(
+                    PersistedCitation(
+                        evidence_id=f"E{citation.position + 1}",
+                        document_name=display_name,
+                        page_start=citation.page_start,
+                        page_end=citation.page_end,
+                        snippet=citation.snippet,
+                    )
+                )
+        return [
+            PersistedMessage(
+                id=item.id,
+                position=item.position,
+                role=item.role,
+                content=item.content,
+                language=item.language,
+                created_at=item.created_at,
+                citations=tuple(citations_by_message.get(item.id, [])),
+            )
+            for item in messages
+        ]
+
     async def begin_run(
         self,
         *,
@@ -61,9 +198,11 @@ class SqlAlchemyConversationRepository:
     ) -> RunHandle:
         conversation = await self._session.scalar(
             select(ConversationModel)
+            .join(CollectionModel, CollectionModel.id == ConversationModel.collection_id)
             .where(
                 ConversationModel.id == conversation_id,
                 ConversationModel.owner_id == owner_id,
+                CollectionModel.deleted_at.is_(None),
             )
             .with_for_update()
         )
@@ -190,3 +329,12 @@ class SqlAlchemyConversationRepository:
             )
         )
         return int(current) + 1 if current is not None else 0
+
+
+def _to_conversation(model: ConversationModel) -> Conversation:
+    return Conversation(
+        id=model.id,
+        collection_id=model.collection_id,
+        title=model.title,
+        created_at=model.created_at,
+    )

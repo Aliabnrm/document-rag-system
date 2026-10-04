@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from uuid import UUID
 
-from sqlalchemy import Select, and_, select
+from sqlalchemy import Select, and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.collections.infrastructure.models import CollectionModel
@@ -22,6 +22,19 @@ class SqlAlchemyDocumentRepository:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
+    async def count_owned_documents(self, owner_id: UUID) -> int:
+        value = await self._session.scalar(
+            select(func.count())
+            .select_from(DocumentModel)
+            .join(CollectionModel, CollectionModel.id == DocumentModel.collection_id)
+            .where(
+                CollectionModel.owner_id == owner_id,
+                CollectionModel.deleted_at.is_(None),
+                DocumentModel.deleted_at.is_(None),
+            )
+        )
+        return int(value or 0)
+
     async def create_pending(
         self,
         *,
@@ -39,6 +52,7 @@ class SqlAlchemyDocumentRepository:
             select(CollectionModel.id).where(
                 CollectionModel.id == collection_id,
                 CollectionModel.owner_id == owner_id,
+                CollectionModel.deleted_at.is_(None),
             )
         )
         if collection_exists is None:
@@ -142,6 +156,15 @@ class SqlAlchemyDocumentRepository:
         before_created_at: datetime | None,
         before_id: UUID | None,
     ) -> list[DocumentSummary]:
+        collection_exists = await self._session.scalar(
+            select(CollectionModel.id).where(
+                CollectionModel.id == collection_id,
+                CollectionModel.owner_id == owner_id,
+                CollectionModel.deleted_at.is_(None),
+            )
+        )
+        if collection_exists is None:
+            raise NotFoundError("collection_not_found", "errors.collection_not_found")
         statement = self._summary_statement(owner_id=owner_id, collection_id=collection_id)
         if before_created_at is not None and before_id is not None:
             statement = statement.where(
@@ -219,6 +242,53 @@ class SqlAlchemyDocumentRepository:
     async def rollback(self) -> None:
         await self._session.rollback()
 
+    async def tombstone(
+        self, *, owner_id: UUID, collection_id: UUID, document_id: UUID
+    ) -> tuple[str, ...]:
+        row = (
+            await self._session.execute(
+                select(DocumentModel, CollectionModel)
+                .join(CollectionModel, CollectionModel.id == DocumentModel.collection_id)
+                .where(
+                    DocumentModel.id == document_id,
+                    CollectionModel.id == collection_id,
+                    CollectionModel.owner_id == owner_id,
+                )
+                .with_for_update()
+            )
+        ).one_or_none()
+        if row is None:
+            raise NotFoundError("document_not_found", "errors.document_not_found")
+        document, collection = row
+        if collection.deleted_at is not None:
+            raise NotFoundError("document_not_found", "errors.document_not_found")
+        version_rows = (
+            await self._session.execute(
+                select(DocumentVersionModel.id, DocumentVersionModel.storage_key).where(
+                    DocumentVersionModel.document_id == document_id
+                )
+            )
+        ).all()
+        version_ids = [item.id for item in version_rows]
+        if document.deleted_at is None:
+            now = datetime.now(UTC)
+            document.deleted_at = now
+            if version_ids:
+                jobs = (
+                    await self._session.scalars(
+                        select(IngestionJobModel).where(
+                            IngestionJobModel.document_version_id.in_(version_ids)
+                        )
+                    )
+                ).all()
+                for job in jobs:
+                    if job.status != IngestionJobStatus.SUCCEEDED:
+                        job.status = IngestionJobStatus.FAILED
+                        job.error_code = "document_deleted"
+                        job.finished_at = now
+        await self._session.flush()
+        return tuple(item.storage_key for item in version_rows)
+
     def _summary_statement(
         self,
         *,
@@ -236,6 +306,8 @@ class SqlAlchemyDocumentRepository:
             .where(
                 CollectionModel.id == collection_id,
                 CollectionModel.owner_id == owner_id,
+                CollectionModel.deleted_at.is_(None),
+                DocumentModel.deleted_at.is_(None),
             )
         )
 
@@ -259,6 +331,8 @@ class SqlAlchemyDocumentRepository:
                 DocumentVersionModel.id == document_version_id,
                 IngestionJobModel.id == job_id,
                 CollectionModel.owner_id == owner_id,
+                CollectionModel.deleted_at.is_(None),
+                DocumentModel.deleted_at.is_(None),
             )
         )
         if for_update:

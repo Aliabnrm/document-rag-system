@@ -1,0 +1,266 @@
+.loading {
+  color: var(--color-text-secondary);
+  padding-block: var(--space-12);
+  text-align: center;
+}
+
+.authPanel {
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  display: grid;
+  gap: clamp(var(--space-8), 6vw, var(--space-16));
+  grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.82fr);
+  margin-block-end: var(--space-12);
+  overflow: hidden;
+  padding: clamp(var(--space-7), 4vw, var(--space-12));
+}
+
+.authCopy {
+  align-self: center;
+  max-inline-size: 30rem;
+}
+
+.authCopy h2 {
+  font-size: var(--font-size-2xl);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--line-height-heading);
+  margin: var(--space-3) 0;
+  text-wrap: balance;
+}
+
+.authCopy p {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-body);
+  margin-block-end: 0;
+}
+
+.kicker {
+  color: var(--color-action) !important;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-wide);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+[dir="rtl"] .kicker {
+  letter-spacing: 0;
+}
+
+.authFormColumn {
+  align-self: start;
+  background: var(--color-surface-subtle);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-5);
+}
+
+.form,
+.securityForm {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.form > button {
+  inline-size: 100%;
+  margin-block-start: var(--space-1);
+}
+
+.modeSwitch {
+  background: var(--color-surface-muted);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-control);
+  display: grid;
+  gap: var(--space-1);
+  grid-template-columns: repeat(3, 1fr);
+  padding: var(--space-1);
+}
+
+.modeButton,
+.modeActive {
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  min-block-size: var(--control-height-compact);
+  padding-inline: var(--space-2);
+  transition:
+    background-color var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
+}
+
+.modeButton:hover {
+  color: var(--color-text);
+}
+
+.modeActive {
+  background: var(--color-surface);
+  box-shadow: 0 0.0625rem 0.2rem rgb(34 50 42 / 0.12);
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+.field {
+  display: grid;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  gap: var(--space-2);
+}
+
+.error,
+.success {
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-body);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+}
+
+.error {
+  background: var(--color-danger-soft);
+  border-inline-start: var(--border-width-accent) solid var(--color-danger-border);
+  color: var(--color-danger-text);
+}
+
+.success {
+  background: var(--color-success-soft);
+  color: var(--color-success-text);
+}
+
+.accountBar {
+  align-items: center;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  display: flex;
+  gap: var(--space-5);
+  justify-content: space-between;
+  margin-block-end: var(--space-4);
+  min-block-size: 4rem;
+  padding: var(--space-3) var(--space-5);
+}
+
+.accountBar > div:first-child {
+  display: grid;
+  font-size: var(--font-size-sm);
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+
+.accountBar span {
+  color: var(--color-text-secondary);
+  direction: ltr;
+  font-size: var(--font-size-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accountActions {
+  align-items: center;
+  display: flex;
+  gap: var(--space-2);
+}
+
+.securityDetails {
+  position: relative;
+}
+
+.securityDetails summary {
+  border-radius: var(--radius-control);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  list-style: none;
+  min-block-size: var(--control-height-compact);
+  padding: var(--space-2) var(--space-3);
+}
+
+.securityDetails summary::-webkit-details-marker {
+  display: none;
+}
+
+.securityDetails summary:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+.securityDetails[open] {
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-composer);
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  max-inline-size: min(24rem, calc(100vw - var(--space-8)));
+  padding: var(--space-5);
+  position: absolute;
+  width: 24rem;
+  z-index: var(--z-overlay);
+}
+
+.securityDetails[open] summary {
+  margin-block-end: var(--space-4);
+  padding: 0;
+}
+
+.securityForm {
+  margin-block-end: var(--space-4);
+}
+
+@media (max-width: 56.25rem) {
+  .authPanel {
+    gap: var(--space-8);
+    grid-template-columns: 1fr;
+  }
+
+  .authCopy {
+    max-inline-size: var(--measure-copy);
+  }
+
+  .authFormColumn {
+    max-inline-size: 32rem;
+    width: 100%;
+  }
+}
+
+@media (max-width: 40rem) {
+  .authPanel {
+    border-inline: 0;
+    border-radius: 0;
+    box-shadow: none;
+    gap: var(--space-6);
+    padding: var(--space-5) var(--space-4) var(--space-8);
+  }
+
+  .authFormColumn {
+    padding: var(--space-4);
+  }
+
+  .accountBar {
+    align-items: stretch;
+    border-inline: 0;
+    border-radius: 0;
+    flex-direction: column;
+    margin-block-end: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .accountActions {
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modeButton,
+  .modeActive {
+    transition: none;
+  }
+}

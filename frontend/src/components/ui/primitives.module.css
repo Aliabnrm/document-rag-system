@@ -14,7 +14,8 @@
   transition:
     background-color var(--motion-fast) var(--motion-ease),
     border-color var(--motion-fast) var(--motion-ease),
-    color var(--motion-fast) var(--motion-ease);
+    color var(--motion-fast) var(--motion-ease),
+    transform var(--motion-fast) var(--motion-ease);
 }
 
 .button:disabled {
@@ -31,6 +32,10 @@
   background: var(--color-action-hover);
 }
 
+.button:not(:disabled):active {
+  transform: translateY(0.0625rem);
+}
+
 .secondary {
   background: var(--color-surface);
   border-color: var(--color-border-strong);
@@ -42,6 +47,10 @@
   background: var(--color-surface-muted);
 }
 
+.secondary:not(:disabled):hover {
+  border-color: var(--color-text-tertiary);
+}
+
 .quiet {
   background: transparent;
   color: var(--color-text-secondary);
@@ -50,7 +59,12 @@
 
 .danger {
   background: var(--color-danger-soft);
+  border-color: var(--color-danger-border);
   color: var(--color-danger-text);
+}
+
+.danger:not(:disabled):hover {
+  background: var(--color-danger-hover);
 }
 
 .compact {
@@ -68,6 +82,12 @@
   min-block-size: var(--space-7);
   padding-inline: var(--space-3);
   white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
 }
 
 .badgeDot {

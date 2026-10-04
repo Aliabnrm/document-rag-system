@@ -2,6 +2,8 @@ import type { AxiosInstance } from "axios";
 
 import {
   CollectionSchema,
+  CollectionListPageSchema,
+  type CollectionListPage,
   type Collection,
   type CreateCollectionInput,
 } from "@/schema/collection/collection.schema";
@@ -34,4 +36,26 @@ export function getCollectionApi(
     api.get(`/api/v1/collections/${collectionId}`, { signal }),
     CollectionSchema,
   );
+}
+
+export function listCollectionsApi(
+  api: AxiosInstance,
+  cursor?: string,
+  signal?: AbortSignal,
+): Promise<CollectionListPage> {
+  return requestAndParse(
+    api.get("/api/v1/collections", {
+      params: { cursor, page_size: 20 },
+      signal,
+    }),
+    CollectionListPageSchema,
+  );
+}
+
+export async function deleteCollectionApi(
+  api: AxiosInstance,
+  collectionId: string,
+  signal?: AbortSignal,
+): Promise<void> {
+  await api.delete(`/api/v1/collections/${collectionId}`, { signal });
 }

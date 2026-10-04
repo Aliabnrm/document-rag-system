@@ -9,6 +9,7 @@ from app.modules.documents.application.upload import (
 
 __all__ = [
     "CreateDocumentUpload",
+    "DeleteDocument",
     "DocumentPage",
     "DocumentQueryRepository",
     "DocumentUploadRepository",
@@ -20,6 +21,7 @@ __all__ = [
     "UploadStream",
 ]
 from app.modules.documents.application.documents import (
+    DeleteDocument,
     DocumentPage,
     DocumentQueryRepository,
     ListDocuments,

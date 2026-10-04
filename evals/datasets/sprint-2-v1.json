@@ -1,0 +1,9 @@
+{
+  "dataset_version": "sprint-2-v1",
+  "datasets": [
+    "sprint-1-v1.jsonl",
+    "sprint-2-pdf-v1.jsonl"
+  ],
+  "question_count": 80,
+  "review_status": "controlled fixtures reviewed for answer and page labels"
+}

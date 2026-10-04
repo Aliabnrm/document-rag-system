@@ -5,7 +5,9 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import type { Citation } from "@/schema/conversation/conversation.schema";
 
 import type { ChatMessage } from "../model/chat-message";
+import type { FeedbackReason } from "@/services/api/feedback/feedback.api";
 import styles from "../workspace.module.css";
+import { AnswerFeedback } from "./answer-feedback";
 import { CitationPageLabel } from "./citation-page-label";
 
 type ChatMessageItemProps = {
@@ -14,11 +16,20 @@ type ChatMessageItemProps = {
     citation: Citation,
     trigger: HTMLButtonElement,
   ) => void;
+  onFeedback: (
+    messageId: string,
+    rating: -1 | 1,
+    reason: FeedbackReason,
+    comment?: string,
+  ) => Promise<void>;
+  feedbackPending: boolean;
 };
 
 export function ChatMessageItem({
   message,
   onCitationSelect,
+  onFeedback,
+  feedbackPending,
 }: ChatMessageItemProps) {
   const t = useTranslations("Workspace");
 
@@ -77,6 +88,14 @@ export function ChatMessageItem({
             </button>
           ))}
         </div>
+      ) : null}
+
+      {message.role === "assistant" && message.status === "complete" ? (
+        <AnswerFeedback
+          messageId={message.id}
+          isPending={feedbackPending}
+          onSubmit={onFeedback}
+        />
       ) : null}
     </article>
   );

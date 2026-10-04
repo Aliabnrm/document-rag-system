@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.modules.conversations.application import Conversation
+from app.modules.conversations.application import Conversation, PersistedMessage
 
 
 class CreateConversationRequest(BaseModel):
@@ -20,6 +20,38 @@ class ConversationResponse(BaseModel):
     @classmethod
     def from_domain(cls, item: Conversation) -> "ConversationResponse":
         return cls.model_validate(item, from_attributes=True)
+
+
+class ConversationListResponse(BaseModel):
+    items: list[ConversationResponse]
+    next_cursor: str | None
+
+
+class PersistedCitationResponse(BaseModel):
+    evidence_id: str
+    document_name: str
+    page_start: int
+    page_end: int
+    snippet: str
+
+
+class PersistedMessageResponse(BaseModel):
+    id: UUID
+    position: int
+    role: Literal["user", "assistant"]
+    content: str
+    language: str
+    created_at: datetime
+    citations: list[PersistedCitationResponse]
+
+    @classmethod
+    def from_domain(cls, item: PersistedMessage) -> "PersistedMessageResponse":
+        return cls.model_validate(item, from_attributes=True)
+
+
+class MessageListResponse(BaseModel):
+    items: list[PersistedMessageResponse]
+    next_position: int | None
 
 
 class AskQuestionRequest(BaseModel):

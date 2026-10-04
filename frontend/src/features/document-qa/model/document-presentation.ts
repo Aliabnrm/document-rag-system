@@ -41,6 +41,11 @@ export function errorMessageKey(code: string): string {
     network_error: "errorNetwork",
     invalid_model_citations: "errorInvalidCitations",
     answer_pipeline_failed: "errorAnswerFailed",
+    document_quota_exceeded: "errorDocumentQuotaExceeded",
+    question_rate_limited: "errorQuestionRateLimited",
+    question_quota_exceeded: "errorQuestionRateLimited",
+    generation_quota_exceeded: "errorQuestionRateLimited",
+    generation_concurrency_exceeded: "errorGenerationBusy",
   };
   return keys[code] ?? "errorGeneric";
 }

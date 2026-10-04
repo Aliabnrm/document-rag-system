@@ -7,6 +7,10 @@ import { ApiError, isAbortError, toApiError } from "./api-error";
 
 export const coreApi = axios.create({
   baseURL: runtimeConfig.apiBaseUrl,
+  withCredentials: true,
+  withXSRFToken: true,
+  xsrfCookieName: runtimeConfig.csrfCookieName,
+  xsrfHeaderName: "X-CSRF-Token",
   headers: {
     Accept: "application/json",
   },

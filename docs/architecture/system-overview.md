@@ -8,6 +8,7 @@ The browser talks only to the backend API. The backend owns authorization, appli
 flowchart LR
     U[User] --> F[Next.js frontend]
     F --> A[FastAPI backend]
+    A --> I[Identity/session module]
     A --> P[(PostgreSQL + pgvector)]
     A --> O[(S3-compatible object storage)]
     A --> R[(Redis queue)]
@@ -41,7 +42,37 @@ Sprint 1 modules:
 - `documents`: stable documents, immutable versions, upload, status, and pagination.
 - `ingestion`: extraction, normalization, chunking, embedding, and job state.
 - `retrieval`: scoped dense/lexical search, fusion, deduplication, and context packing.
-- `conversations`: questions, answers, citations, feedback, and streaming.
+- `conversations`: questions, answers, citations, history, and streaming.
+- `identity`: registration, Argon2id credentials, opaque sessions, and recovery.
+- `feedback`: ownership-checked structured judgment tied to an exact RAG run.
+- `data_lifecycle`: durable, retryable cleanup of tombstoned source and derived evidence.
+
+## Authentication and authorization flow
+
+Authentication answers “who is this request?” Authorization answers “may this user act on this
+resource?”. The API hashes the opaque cookie token, resolves a live database session and active user,
+then passes only the internal user UUID to product use cases. Email is never a resource foreign key.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant UI as Next.js
+    participant API as FastAPI
+    participant DB as PostgreSQL
+    participant Redis
+    User->>UI: email + password + optional display name
+    UI->>API: register
+    API->>Redis: enforce IP + email registration limits
+    API->>DB: atomic unique email + Argon2id credential + session
+    API-->>UI: HttpOnly session + readable bound CSRF cookie
+    User->>UI: open owned collection
+    UI->>API: cookie; unsafe requests also Origin + CSRF header
+    API->>DB: resolve digest, expiry, revocation, active user
+    API->>DB: query with owner UUID predicate
+    User->>UI: logout
+    UI->>API: DELETE session
+    API->>DB: revoke current digest
+```
 
 ## Ingestion flow
 
@@ -120,6 +151,15 @@ sequenceDiagram
 `GET /api/v1/health` is liveness and does not touch dependencies. `GET /api/v1/ready` checks
 PostgreSQL, Redis, and MinIO independently and returns a safe 503 envelope if any required
 dependency cannot serve traffic.
+
+The CLI is a separate presentation entry point over the same identity use cases. It creates
+short-lived password-reset tokens and performs confirmed account/session administration; no public
+admin HTTP panel exists.
+
+Deletion follows the same outbox-like durability principle as ingestion dispatch: the API commits
+the tombstone and cleanup job together, dispatches only after commit, and a periodic reconciler
+repairs broker-send gaps. The cleanup worker removes object bytes before deleting citations and
+chunks, then redacts retained tombstone metadata and marks the job succeeded.
 
 ## Dependency rule
 

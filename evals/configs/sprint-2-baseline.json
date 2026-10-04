@@ -1,0 +1,20 @@
+{
+  "dataset_version": "sprint-2-v1",
+  "chunker_version": "boundary-token-v1",
+  "pipeline_version": "ingestion-v1",
+  "chunk_size_tokens": 96,
+  "chunk_overlap_tokens": 16,
+  "dense_k": 16,
+  "lexical_k": 16,
+  "final_k": 8,
+  "context_token_budget": 900,
+  "rrf_rank_constant": 60,
+  "documents": [
+    {"name":"fa-company.txt","sha256":"9e2536ee073a33e7690d3dbde20c4be588f529d840d43ba46c28d8edac626e22","provenance":"Sprint 1 synthetic fixture"},
+    {"name":"fa-university.txt","sha256":"c2849da55777a5dfd9dd2e0d236e9cb2d71c5a1b487c60eb86107038f2b39b09","provenance":"Sprint 1 synthetic fixture"},
+    {"name":"en-handbook.txt","sha256":"5d6e98763f0e6173f4ff5b6524f48effe481ba6cde20a57694ad892eebf77581","provenance":"Sprint 1 synthetic fixture"},
+    {"name":"en-safety.txt","sha256":"fcf92a3f73ad8c90afe15514f85e6a9b2c7f46431f880e23b72511894ff7d7aa","provenance":"Sprint 1 synthetic fixture"},
+    {"name":"sprint-2-fa-operations.pdf","sha256":"1900c012ecf6e3445185785a453eb723214237d2ee3a0ee923e34b97a6a8e2dd","provenance":"Synthetic Persian operations handbook generated from versioned HTML"},
+    {"name":"sprint-2-en-product.pdf","sha256":"feeafdb1d0078b834b66a6bcfdb181b67cc70182fc15a790f324bafa45b4adb0","provenance":"Synthetic English product handbook generated from versioned HTML"}
+  ]
+}

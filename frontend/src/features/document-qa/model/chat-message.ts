@@ -28,6 +28,7 @@ export function applyAnswerEvent(
     case "completed":
       return {
         ...message,
+        id: event.data.answer_message_id,
         status: "complete",
         abstained: event.data.abstained,
       };

@@ -11,6 +11,11 @@ from app.modules.conversations.application.conversations import (
     Conversation,
     ConversationRepository,
     CreateConversation,
+    GetConversation,
+    ListConversationMessages,
+    ListConversations,
+    PersistedCitation,
+    PersistedMessage,
 )
 
 __all__ = [
@@ -22,6 +27,11 @@ __all__ = [
     "ConversationRepository",
     "CreateConversation",
     "GenerationCompleted",
+    "GetConversation",
+    "ListConversationMessages",
+    "ListConversations",
+    "PersistedCitation",
+    "PersistedMessage",
     "StreamEvent",
     "validate_citation_ids",
 ]

@@ -7,7 +7,7 @@ from typing import BinaryIO, Protocol
 from uuid import UUID, uuid4
 
 from app.modules.documents.domain import PendingDocumentUpload
-from app.platform.errors import FieldError, UnsupportedDocumentError
+from app.platform.errors import ApplicationError, FieldError, UnsupportedDocumentError
 
 READ_CHUNK_BYTES = 64 * 1024
 
@@ -37,6 +37,8 @@ class JobDispatcher(Protocol):
 
 
 class DocumentUploadRepository(Protocol):
+    async def count_owned_documents(self, owner_id: UUID) -> int: ...
+
     async def create_pending(
         self,
         *,
@@ -89,12 +91,14 @@ class CreateDocumentUpload:
         storage: SourceStorage,
         dispatcher: JobDispatcher,
         max_upload_bytes: int,
+        max_documents_per_user: int,
         pipeline_version: str,
     ) -> None:
         self._repository = repository
         self._storage = storage
         self._dispatcher = dispatcher
         self._max_upload_bytes = max_upload_bytes
+        self._max_documents_per_user = max_documents_per_user
         self._pipeline_version = pipeline_version
 
     async def execute(
@@ -104,6 +108,13 @@ class CreateDocumentUpload:
         collection_id: UUID,
         upload: UploadStream,
     ) -> PendingDocumentUpload:
+        document_count = await self._repository.count_owned_documents(owner_id)
+        if document_count >= self._max_documents_per_user:
+            raise ApplicationError(
+                code="document_quota_exceeded",
+                message_key="errors.document_quota_exceeded",
+                status_code=429,
+            )
         inspection = await inspect_upload(upload, max_bytes=self._max_upload_bytes)
         document_id = uuid4()
         document_version_id = uuid4()

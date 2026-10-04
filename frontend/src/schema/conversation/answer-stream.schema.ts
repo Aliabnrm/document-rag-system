@@ -21,6 +21,7 @@ export const CitationsDataSchema = z.object({
 export const AnswerCompletedDataSchema = z.object({
   abstained: z.boolean(),
   rag_run_id: z.string().default(""),
+  answer_message_id: z.string().uuid(),
 });
 
 export const AnswerFailureDataSchema = z.object({

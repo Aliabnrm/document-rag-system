@@ -1,8 +1,7 @@
 from functools import lru_cache
 from typing import Literal
-from uuid import UUID
 
-from pydantic import AnyHttpUrl, Field
+from pydantic import AnyHttpUrl, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -31,7 +30,6 @@ class Settings(BaseSettings):
     s3_secret_key: str = "miniosecret"
     s3_bucket: str = "documents"
     s3_region: str = "us-east-1"
-    development_user_id: UUID = UUID("00000000-0000-4000-8000-000000000001")
     max_upload_bytes: int = Field(default=50 * 1024 * 1024, ge=1)
     pipeline_version: str = "ingestion-v1"
     embedding_dimensions: int = Field(default=384, ge=1)
@@ -41,6 +39,7 @@ class Settings(BaseSettings):
     embedding_revision: str = "faf4aa4225822f3bc6376869cb1164e8e3feedd0"
     answer_provider: Literal["deterministic", "ollama"] = "deterministic"
     answer_model: str = "qwen2.5:1.5b"
+    answer_max_output_tokens: int = Field(default=384, ge=32, le=4096)
     ollama_base_url: str = "http://localhost:11434"
     chunk_size_tokens: int = Field(default=220, ge=32, le=2048)
     chunk_overlap_tokens: int = Field(default=40, ge=0, le=512)
@@ -50,6 +49,34 @@ class Settings(BaseSettings):
     context_token_budget: int = Field(default=1800, ge=128, le=32000)
     celery_task_always_eager: bool = False
     request_timeout_seconds: float = Field(default=60.0, gt=0, le=300)
+    auth_cookie_secure: bool = False
+    auth_session_idle_minutes: int = Field(default=60, ge=5, le=1440)
+    auth_session_absolute_hours: int = Field(default=168, ge=1, le=720)
+    auth_argon2_time_cost: int = Field(default=3, ge=1, le=10)
+    auth_argon2_memory_cost_kib: int = Field(default=65536, ge=8192, le=262144)
+    auth_argon2_parallelism: int = Field(default=2, ge=1, le=8)
+    auth_login_attempt_limit: int = Field(default=8, ge=1, le=100)
+    auth_login_window_seconds: int = Field(default=900, ge=30, le=86400)
+    auth_registration_attempt_limit: int = Field(default=5, ge=1, le=100)
+    auth_registration_window_seconds: int = Field(default=3600, ge=30, le=86400)
+    auth_max_active_sessions: int = Field(default=5, ge=1, le=50)
+    quota_documents_per_user: int = Field(default=100, ge=1, le=10000)
+    quota_questions_per_day: int = Field(default=200, ge=1, le=100000)
+    quota_concurrent_generations_per_user: int = Field(default=1, ge=1, le=20)
+
+    @model_validator(mode="after")
+    def validate_auth_environment(self) -> "Settings":
+        if self.app_env in {"staging", "production"} and not self.auth_cookie_secure:
+            raise ValueError("secure authentication cookies are required outside development/test")
+        return self
+
+    @property
+    def session_cookie_name(self) -> str:
+        return "__Host-docqa_session" if self.auth_cookie_secure else "docqa_session_dev"
+
+    @property
+    def csrf_cookie_name(self) -> str:
+        return "__Host-docqa_csrf" if self.auth_cookie_secure else "docqa_csrf_dev"
 
     @property
     def docs_enabled(self) -> bool:

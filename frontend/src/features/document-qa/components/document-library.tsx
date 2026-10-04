@@ -20,11 +20,13 @@ type DocumentLibraryProps = {
   hasNextPage: boolean;
   isLoadingMore: boolean;
   retryingDocumentId: string | null;
+  deletingDocumentId: string | null;
   uploadProgress: number | null;
   isUploading: boolean;
   onUpload: (file: File) => void;
   onCancelUpload: () => void;
   onRetryDocument: (documentId: string) => void;
+  onDeleteDocument: (documentId: string) => void;
   onLoadMore: () => void;
   onDismissError: () => void;
 };
@@ -37,11 +39,13 @@ export function DocumentLibrary({
   hasNextPage,
   isLoadingMore,
   retryingDocumentId,
+  deletingDocumentId,
   uploadProgress,
   isUploading,
   onUpload,
   onCancelUpload,
   onRetryDocument,
+  onDeleteDocument,
   onLoadMore,
   onDismissError,
 }: DocumentLibraryProps) {
@@ -89,7 +93,9 @@ export function DocumentLibrary({
               document={document}
               locale={locale}
               isRetrying={retryingDocumentId === document.document_id}
+              isDeleting={deletingDocumentId === document.document_id}
               onRetry={() => onRetryDocument(document.document_id)}
+              onDelete={() => onDeleteDocument(document.document_id)}
             />
           ))
         )}

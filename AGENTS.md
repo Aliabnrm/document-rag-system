@@ -10,7 +10,7 @@ Optimize for correctness, clarity, maintainability, accessibility, and a strong 
 
 ## Current work
 
-- Active plan: `docs/product/sprint-1.md`.
+- Active plan: `docs/product/sprint-2.md`.
 - Product scope: `docs/product/product-brief.md`.
 - Architecture: `docs/architecture/system-overview.md` and accepted ADRs in `docs/architecture/decisions/`.
 - Domain vocabulary: `docs/architecture/domain-model.md`.

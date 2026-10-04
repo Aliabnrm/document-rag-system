@@ -15,6 +15,7 @@ _SAFE_FIELDS = (
     "collection_id",
     "document_version_id",
     "job_id",
+    "cleanup_job_id",
     "conversation_id",
     "rag_run_id",
     "method",
@@ -51,7 +52,7 @@ class JsonLogFormatter(logging.Formatter):
             value = getattr(record, field, None)
             if value is not None:
                 payload[field] = value
-        return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        return json.dumps(payload, ensure_ascii=False, separators=(",", ":"), default=str)
 
 
 def configure_logging(*, level: str) -> None:

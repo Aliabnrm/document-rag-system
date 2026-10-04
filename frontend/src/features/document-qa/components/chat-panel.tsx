@@ -6,6 +6,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import type { Citation } from "@/schema/conversation/conversation.schema";
 
 import type { ChatMessage } from "../model/chat-message";
+import type { FeedbackReason } from "@/services/api/feedback/feedback.api";
 import { errorMessageKey } from "../model/document-presentation";
 import styles from "../workspace.module.css";
 import { ChatMessageItem } from "./chat-message-item";
@@ -26,6 +27,13 @@ type ChatPanelProps = {
     citation: Citation,
     trigger: HTMLButtonElement,
   ) => void;
+  onFeedback: (
+    messageId: string,
+    rating: -1 | 1,
+    reason: FeedbackReason,
+    comment?: string,
+  ) => Promise<void>;
+  feedbackPending: boolean;
 };
 
 export function ChatPanel({
@@ -39,6 +47,8 @@ export function ChatPanel({
   onRetry,
   onDismissError,
   onCitationSelect,
+  onFeedback,
+  feedbackPending,
 }: ChatPanelProps) {
   const t = useTranslations("Workspace");
   const canAsk = readyDocumentCount > 0;
@@ -78,6 +88,8 @@ export function ChatPanel({
               key={message.id}
               message={message}
               onCitationSelect={onCitationSelect}
+              onFeedback={onFeedback}
+              feedbackPending={feedbackPending}
             />
           ))
         )}

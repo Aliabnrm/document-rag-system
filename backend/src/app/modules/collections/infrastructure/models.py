@@ -1,6 +1,7 @@
+from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import ForeignKey, Index, String, text
+from sqlalchemy import DateTime, ForeignKey, Index, String, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.platform.database.base import Base, TimestampMixin
@@ -8,7 +9,10 @@ from app.platform.database.base import Base, TimestampMixin
 
 class CollectionModel(TimestampMixin, Base):
     __tablename__ = "collections"
-    __table_args__ = (Index("ix_collections_owner_created", "owner_id", "created_at"),)
+    __table_args__ = (
+        Index("ix_collections_owner_created", "owner_id", "created_at"),
+        Index("ix_collections_owner_deleted", "owner_id", "deleted_at"),
+    )
 
     id: Mapped[UUID] = mapped_column(primary_key=True, server_default=text("gen_random_uuid()"))
     owner_id: Mapped[UUID] = mapped_column(
@@ -17,3 +21,4 @@ class CollectionModel(TimestampMixin, Base):
     )
     name: Mapped[str] = mapped_column(String(160), nullable=False)
     description: Mapped[str | None] = mapped_column(String(1000))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

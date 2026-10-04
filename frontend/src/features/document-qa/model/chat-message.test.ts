@@ -23,7 +23,11 @@ describe("applyAnswerEvent", () => {
     expect(
       applyAnswerEvent(assistantMessage, {
         event: "completed",
-        data: { abstained: true, rag_run_id: "run-1" },
+        data: {
+          abstained: true,
+          rag_run_id: "run-1",
+          answer_message_id: "9bbab271-1094-432f-9da8-94840a09693d",
+        },
       }),
     ).toMatchObject({ abstained: true, status: "complete" });
   });

@@ -20,7 +20,10 @@ from app.platform.database.base import Base, TimestampMixin
 
 class DocumentModel(TimestampMixin, Base):
     __tablename__ = "documents"
-    __table_args__ = (Index("ix_documents_collection_created", "collection_id", "created_at"),)
+    __table_args__ = (
+        Index("ix_documents_collection_created", "collection_id", "created_at"),
+        Index("ix_documents_collection_deleted", "collection_id", "deleted_at"),
+    )
 
     id: Mapped[UUID] = mapped_column(primary_key=True, server_default=text("gen_random_uuid()"))
     collection_id: Mapped[UUID] = mapped_column(
@@ -28,6 +31,7 @@ class DocumentModel(TimestampMixin, Base):
         nullable=False,
     )
     display_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class DocumentVersionModel(TimestampMixin, Base):

@@ -15,8 +15,10 @@ from app.modules.retrieval.application import Evidence
 
 _WORD = re.compile(r"\w+(?:\u200c\w+)*", flags=re.UNICODE)
 _SENTENCE = re.compile(r"[^.!?؟\n]+[.!?؟]?", flags=re.UNICODE)
-_CITATION_LINE = re.compile(r"(?im)^\s*CITATIONS\s*:\s*([^\n]+)\s*$")
+_CITATION_LINE = re.compile(r"(?im)\s*CITATIONS\s*:\s*([^\n]+)\s*$")
 _EVIDENCE_ID = re.compile(r"\bE\d+\b")
+_CONTROL_MARKERS = ("INSUFFICIENT_EVIDENCE", "CITATIONS:")
+_STREAM_HOLD_CHARACTERS = max(len(item) for item in _CONTROL_MARKERS)
 
 
 class DeterministicAnswerGenerator:
@@ -72,10 +74,18 @@ class DeterministicAnswerGenerator:
 
 
 class OllamaAnswerGenerator:
-    def __init__(self, *, base_url: str, model: str, timeout_seconds: float) -> None:
+    def __init__(
+        self,
+        *,
+        base_url: str,
+        model: str,
+        timeout_seconds: float,
+        max_output_tokens: int,
+    ) -> None:
         self._base_url = base_url.rstrip("/")
         self._model = model
         self._timeout_seconds = timeout_seconds
+        self._max_output_tokens = max_output_tokens
 
     async def stream(
         self,
@@ -85,37 +95,61 @@ class OllamaAnswerGenerator:
         evidence: tuple[Evidence, ...],
     ) -> AsyncIterator[AnswerDelta | CitationSuggestion | GenerationCompleted]:
         prompt = _grounded_prompt(question=question, language=language, evidence=evidence)
-        async with httpx.AsyncClient(timeout=self._timeout_seconds) as client:
-            response = await client.post(
+        raw_answer = ""
+        emitted_text = ""
+        payload: dict[str, object] = {}
+        async with (
+            httpx.AsyncClient(timeout=self._timeout_seconds) as client,
+            client.stream(
+                "POST",
                 f"{self._base_url}/api/chat",
                 json={
                     "model": self._model,
-                    "stream": False,
+                    "stream": True,
+                    # Thinking traces add large latency and consume the bounded output budget for
+                    # Qwen 3 without improving this short grounded-answer contract.
+                    "think": False,
                     "messages": [
                         {"role": "system", "content": prompt[0]},
                         {"role": "user", "content": prompt[1]},
                     ],
-                    "options": {"temperature": 0.1},
+                    "options": {
+                        "temperature": 0,
+                        "seed": 42,
+                        "num_predict": self._max_output_tokens,
+                    },
                 },
-            )
+            ) as response,
+        ):
             response.raise_for_status()
-            payload = response.json()
-        raw_answer = str(payload.get("message", {}).get("content", "")).strip()
-        citation_match = _CITATION_LINE.search(raw_answer)
-        citation_ids = _EVIDENCE_ID.findall(citation_match.group(1)) if citation_match else []
-        answer = _CITATION_LINE.sub("", raw_answer).strip()
-        abstained = "INSUFFICIENT_EVIDENCE" in answer
-        answer = answer.replace("INSUFFICIENT_EVIDENCE", "").strip()
-        if not answer:
-            answer = (
-                "در اسناد آماده، شواهد کافی برای پاسخ پیدا نکردم."
-                if language == "fa"
-                else "I could not find enough evidence in the ready documents."
-            )
-            abstained = True
+            async for line in response.aiter_lines():
+                if not line:
+                    continue
+                event = json.loads(line)
+                if not isinstance(event, dict):
+                    continue
+                if event.get("done") is True:
+                    payload = event
+                message = event.get("message")
+                if not isinstance(message, dict):
+                    continue
+                content = message.get("content")
+                if not isinstance(content, str) or not content:
+                    continue
+                raw_answer += content
+                safe_end = _safe_stream_end(raw_answer)
+                if safe_end > len(emitted_text):
+                    delta = raw_answer[len(emitted_text) : safe_end]
+                    emitted_text += delta
+                    yield AnswerDelta(delta)
 
-        async for event in _stream_text(answer):
-            yield event
+        raw_answer = raw_answer.strip()
+        answer, citation_ids, abstained = _parse_model_answer(raw_answer, language)
+        if not answer.startswith(emitted_text):
+            raise ValueError("model answer could not be finalized without rewriting streamed text")
+        remaining_answer = answer[len(emitted_text) :]
+        if remaining_answer:
+            yield AnswerDelta(remaining_answer)
         for evidence_id in citation_ids:
             yield CitationSuggestion(evidence_id)
         yield GenerationCompleted(
@@ -126,6 +160,8 @@ class OllamaAnswerGenerator:
                 "prompt_version": "grounded-answer-v1",
                 "runtime": "ollama",
                 "done_reason": payload.get("done_reason"),
+                "max_output_tokens": self._max_output_tokens,
+                "thinking_enabled": False,
                 "total_duration_ns": _optional_int(payload.get("total_duration")),
                 "load_duration_ns": _optional_int(payload.get("load_duration")),
                 "prompt_eval_duration_ns": _optional_int(payload.get("prompt_eval_duration")),
@@ -213,3 +249,37 @@ For insufficient evidence use: CITATIONS: none."""
 
 def _optional_int(value: object) -> int | None:
     return value if isinstance(value, int) else None
+
+
+def _parse_model_answer(
+    raw_answer: str,
+    language: Literal["fa", "en"],
+) -> tuple[str, list[str], bool]:
+    citation_match = _CITATION_LINE.search(raw_answer)
+    citation_ids = _EVIDENCE_ID.findall(citation_match.group(1)) if citation_match else []
+    answer = _CITATION_LINE.sub("", raw_answer).strip()
+    abstained = "INSUFFICIENT_EVIDENCE" in answer
+    answer = answer.replace("INSUFFICIENT_EVIDENCE", "").strip()
+    if not answer:
+        answer = (
+            "در اسناد آماده، شواهد کافی برای پاسخ پیدا نکردم."
+            if language == "fa"
+            else "I could not find enough evidence in the ready documents."
+        )
+        abstained = True
+    return answer, citation_ids, abstained
+
+
+def _safe_stream_end(text: str) -> int:
+    folded = text.casefold()
+    marker_positions = [
+        position
+        for marker in _CONTROL_MARKERS
+        if (position := folded.find(marker.casefold())) >= 0
+    ]
+    if marker_positions:
+        safe_end = min(marker_positions)
+        while safe_end > 0 and text[safe_end - 1].isspace():
+            safe_end -= 1
+        return safe_end
+    return max(0, len(text) - _STREAM_HOLD_CHARACTERS)

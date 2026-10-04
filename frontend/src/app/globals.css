@@ -1,18 +1,18 @@
 :root {
   color-scheme: light;
 
-  --color-canvas: #f6f2e9;
-  --color-surface: #fffdf8;
-  --color-surface-muted: #f1ede4;
-  --color-surface-subtle: #fbf8f1;
-  --color-text: #18211d;
-  --color-text-secondary: #556159;
-  --color-text-tertiary: #6a746e;
-  --color-border: #d8ddd7;
-  --color-border-strong: #aeb8b1;
-  --color-action: #0f684d;
-  --color-action-hover: #0a533d;
-  --color-action-soft: #dcece4;
+  --color-canvas: #f7f5ef;
+  --color-surface: #fffefa;
+  --color-surface-muted: #f1efe8;
+  --color-surface-subtle: #faf9f5;
+  --color-text: #17201c;
+  --color-text-secondary: #4f5c55;
+  --color-text-tertiary: #68736d;
+  --color-border: #dce1dc;
+  --color-border-strong: #aab5ae;
+  --color-action: #126247;
+  --color-action-hover: #0b4f39;
+  --color-action-soft: #e0eee7;
   --color-on-action: #ffffff;
   --color-citation: #974928;
   --color-citation-text: #783719;
@@ -24,6 +24,7 @@
   --color-warning-soft: #f7e9c9;
   --color-warning-text: #704706;
   --color-danger-soft: #f9e1df;
+  --color-danger-hover: #f5d5d2;
   --color-danger-text: #8d2929;
   --color-danger-border: #df9c98;
   --color-info-soft: #e0edf5;
@@ -31,25 +32,26 @@
   --color-neutral-soft: #e9ede9;
   --color-user-message: #26352f;
   --color-answer-surface: #f0f6f2;
-  --color-focus: #0f684d;
+  --color-focus: #126247;
 
-  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Tahoma, Arial, sans-serif;
+  --font-ui-fallback: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Arial, sans-serif;
+  --font-sans: var(--font-ui-en), var(--font-ui-fallback);
   --font-size-2xs: 0.6875rem;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
   --font-size-lg: 1.125rem;
-  --font-size-xl: 1.5rem;
-  --font-size-2xl: clamp(2rem, 4vw, 3.25rem);
-  --font-size-display: clamp(2.4rem, 6vw, 5rem);
+  --font-size-xl: 1.375rem;
+  --font-size-2xl: clamp(1.625rem, 2.5vw, 2.25rem);
+  --font-size-display: clamp(2.25rem, 4.4vw, 3.5rem);
   --font-weight-medium: 500;
   --font-weight-semibold: 650;
   --font-weight-bold: 760;
-  --line-height-heading: 1.12;
-  --line-height-body: 1.7;
-  --line-height-reading: 1.85;
-  --tracking-tight: -0.035em;
+  --line-height-heading: 1.18;
+  --line-height-body: 1.65;
+  --line-height-reading: 1.78;
+  --tracking-tight: -0.025em;
   --tracking-wide: 0.09em;
 
   --space-1: 0.25rem;
@@ -68,18 +70,18 @@
   --space-24: 6rem;
   --space-32: 8rem;
 
-  --radius-sm: 0.5rem;
-  --radius-control: 0.75rem;
-  --radius-card: 1rem;
-  --radius-panel: 1.5rem;
+  --radius-sm: 0.375rem;
+  --radius-control: 0.625rem;
+  --radius-card: 0.75rem;
+  --radius-panel: 1rem;
   --radius-pill: 999rem;
   --border-width: 0.0625rem;
   --border-width-thick: 0.125rem;
   --border-width-accent: 0.1875rem;
 
-  --shadow-panel: 0 1.5rem 4rem rgb(34 50 42 / 0.1);
-  --shadow-composer: 0 0.5rem 1.5rem rgb(34 50 42 / 0.08);
-  --shadow-overlay: -1rem 0 3rem rgb(34 50 42 / 0.15);
+  --shadow-panel: 0 0.75rem 2rem rgb(34 50 42 / 0.055);
+  --shadow-composer: 0 0.375rem 1rem rgb(34 50 42 / 0.07);
+  --shadow-overlay: -0.75rem 0 2rem rgb(34 50 42 / 0.13);
 
   --motion-fast: 120ms;
   --motion-base: 180ms;
@@ -88,17 +90,17 @@
   --opacity-disabled: 0.52;
   --opacity-secondary: 0.72;
 
-  --control-height: 2.75rem;
-  --control-height-compact: 2.25rem;
-  --content-max: 82rem;
-  --content-wide: 66rem;
+  --control-height: 2.875rem;
+  --control-height-compact: 2.375rem;
+  --content-max: 78rem;
+  --content-wide: 68rem;
   --measure-copy: 38rem;
   --measure-narrow: 30rem;
   --sidebar-min: 18rem;
-  --workspace-min-height: 42rem;
-  --workspace-body-min-height: 36rem;
-  --chat-min-height: 24rem;
-  --chat-max-height: 44rem;
+  --workspace-min-height: 38rem;
+  --workspace-body-min-height: 32rem;
+  --chat-min-height: 21rem;
+  --chat-max-height: 42rem;
   --message-max-width: 48rem;
   --answer-min-height: 5rem;
   --composer-min-height: 3rem;
@@ -119,6 +121,14 @@ html {
   scroll-behavior: smooth;
 }
 
+html[lang="fa"] {
+  --font-sans: var(--font-ui-fa), Tahoma, Arial, sans-serif;
+  --line-height-heading: 1.42;
+  --line-height-body: 1.9;
+  --line-height-reading: 2;
+  --tracking-tight: 0;
+}
+
 body {
   background: var(--color-canvas);
   color: var(--color-text);
@@ -126,11 +136,21 @@ body {
   margin: 0;
   min-block-size: 100vh;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+.pageFrame {
+  min-block-size: 100vh;
+}
+
+html[lang="fa"] body {
+  font-feature-settings: "kern" 1;
 }
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -142,7 +162,16 @@ textarea {
   color: var(--color-text);
   inline-size: 100%;
   line-height: var(--line-height-body);
-  padding: var(--space-3) var(--space-4);
+  min-block-size: var(--control-height);
+  padding: var(--space-2) var(--space-4);
+  transition:
+    border-color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
+}
+
+input:hover:not(:disabled),
+textarea:hover:not(:disabled) {
+  border-color: var(--color-text-tertiary);
 }
 
 input::placeholder,
@@ -177,14 +206,15 @@ a {
   display: flex;
   justify-content: space-between;
   min-inline-size: 0;
-  padding-block: var(--space-6);
+  border-block-end: var(--border-width) solid var(--color-border);
+  padding-block: var(--space-5);
 }
 
 .brand {
   align-items: center;
   display: flex;
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   gap: var(--space-3);
 }
 
@@ -192,7 +222,7 @@ a {
   align-items: center;
   background: var(--color-text);
   block-size: var(--space-9);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-sm);
   color: var(--color-surface);
   display: inline-flex;
   inline-size: var(--space-9);
@@ -205,20 +235,24 @@ a {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   flex: 0 0 auto;
-  padding: var(--space-2) var(--space-4);
-  transition: background-color var(--motion-fast) var(--motion-ease);
+  min-block-size: var(--control-height-compact);
+  padding: var(--space-1) var(--space-4);
+  transition:
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease);
 }
 
 .languageSwitch:hover {
   background: var(--color-surface);
+  border-color: var(--color-text-tertiary);
 }
 
 .productIntro {
-  align-items: end;
+  align-items: center;
   display: grid;
-  gap: var(--space-8);
-  grid-template-columns: minmax(0, 1.25fr) minmax(16rem, 0.75fr);
-  padding-block: var(--space-16) var(--space-12);
+  gap: clamp(var(--space-8), 5vw, var(--space-16));
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+  padding-block: clamp(var(--space-10), 6vw, var(--space-16)) var(--space-10);
 }
 
 .productIntro > * {
@@ -228,21 +262,21 @@ a {
 .productIntro h1 {
   font-size: var(--font-size-display);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.055em;
-  line-height: 1.02;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
   margin: 0;
   max-inline-size: 58rem;
   text-wrap: balance;
 }
 
 [dir="rtl"] .productIntro h1 {
-  letter-spacing: var(--tracking-tight);
-  line-height: 1.2;
+  letter-spacing: 0;
+  line-height: 1.32;
 }
 
 .productIntro p {
   color: var(--color-text-secondary);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   line-height: var(--line-height-body);
   margin: 0;
   overflow-wrap: anywhere;
@@ -253,7 +287,7 @@ a {
   font-size: var(--font-size-xs) !important;
   font-weight: var(--font-weight-bold);
   letter-spacing: var(--tracking-wide);
-  margin-block-end: var(--space-4) !important;
+  margin-block-end: var(--space-3) !important;
   text-transform: uppercase;
 }
 
@@ -263,17 +297,20 @@ a {
 
 .productPromise {
   border-inline-start: var(--border-width-accent) solid var(--color-citation);
-  padding-inline-start: var(--space-5);
+  max-inline-size: var(--measure-narrow);
+  padding-inline-start: var(--space-4);
 }
 
 .appShell {
-  padding-block-end: var(--space-16);
+  padding-block-end: var(--space-12);
 }
 
 @media (max-width: 56.25rem) {
   .productIntro {
     align-items: start;
+    gap: var(--space-5);
     grid-template-columns: 1fr;
+    padding-block: var(--space-10) var(--space-8);
   }
 
   .productIntro p {
@@ -291,12 +328,16 @@ a {
   }
 
   .productIntro {
-    gap: var(--space-5);
-    padding-block: var(--space-10) var(--space-8);
+    gap: var(--space-4);
+    padding-block: var(--space-8) var(--space-6);
   }
 
   .productIntro h1 {
-    font-size: 2.45rem;
+    font-size: 2.125rem;
+  }
+
+  [dir="rtl"] .productIntro h1 {
+    font-size: 2rem;
   }
 
   .appShell {

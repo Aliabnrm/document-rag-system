@@ -27,3 +27,8 @@ class CollectionResponse(BaseModel):
             created_at=collection.created_at,
             updated_at=collection.updated_at,
         )
+
+
+class CollectionListResponse(BaseModel):
+    items: list[CollectionResponse]
+    next_cursor: str | None

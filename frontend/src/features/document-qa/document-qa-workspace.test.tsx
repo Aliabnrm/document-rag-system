@@ -14,12 +14,24 @@ import { DocumentQaWorkspace } from "./document-qa-workspace";
 vi.mock("@/services/api/collections/collections.api", () => ({
   createCollectionApi: vi.fn(),
   getCollectionApi: vi.fn(),
+  listCollectionsApi: vi.fn().mockResolvedValue({ items: [], next_cursor: null }),
+}));
+
+const push = vi.fn();
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push, replace: vi.fn() }),
 }));
 
 vi.mock("@/services/api/documents/documents.api", () => ({
   listDocumentsApi: vi.fn(),
   uploadDocumentApi: vi.fn(),
   retryDocumentApi: vi.fn(),
+}));
+
+vi.mock("@/services/api/conversations/conversations.api", () => ({
+  createConversationApi: vi.fn(),
+  listConversationMessagesApi: vi.fn(),
+  listConversationsApi: vi.fn().mockResolvedValue({ items: [], next_cursor: null }),
 }));
 
 const collection = {
@@ -69,7 +81,7 @@ describe("DocumentQaWorkspace", () => {
 
     expect(await screen.findByRole("heading", { name: "Product policies" })).toBeVisible();
     expect(screen.getByLabelText("Your question")).toBeDisabled();
-    expect(window.localStorage.getItem("document-qa.collection-id")).toBe(collection.id);
+    expect(push).toHaveBeenCalledWith(`/en/collections/${collection.id}`);
     expect(createCollectionApi).toHaveBeenCalledWith(
       expect.anything(),
       { name: "Product policies", description: undefined },

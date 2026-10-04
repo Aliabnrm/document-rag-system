@@ -4,8 +4,9 @@ from uuid import UUID, uuid4
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.modules.collections.infrastructure.models import CollectionModel
 from app.modules.documents.domain import DocumentVersionState, DocumentVersionStatus
-from app.modules.documents.infrastructure.models import DocumentVersionModel
+from app.modules.documents.infrastructure.models import DocumentModel, DocumentVersionModel
 from app.modules.ingestion.application import DispatchRequest, ExtractionResult, WorkerDocument
 from app.modules.ingestion.application.pipeline import IndexedChunk
 from app.modules.ingestion.domain import IngestionJobState, IngestionJobStatus
@@ -30,9 +31,13 @@ class SqlAlchemyIngestionRepository:
                     DocumentVersionModel,
                     DocumentVersionModel.id == IngestionJobModel.document_version_id,
                 )
+                .join(DocumentModel, DocumentModel.id == DocumentVersionModel.document_id)
+                .join(CollectionModel, CollectionModel.id == DocumentModel.collection_id)
                 .where(
                     IngestionJobModel.id == job_id,
                     DocumentVersionModel.id == document_version_id,
+                    DocumentModel.deleted_at.is_(None),
+                    CollectionModel.deleted_at.is_(None),
                 )
                 .with_for_update()
             )
@@ -114,6 +119,20 @@ class SqlAlchemyIngestionRepository:
             IngestionJobStatus(job.status) is not IngestionJobStatus.RUNNING
             or DocumentVersionStatus(version.status) is not DocumentVersionStatus.EMBEDDING
         ):
+            await self._session.rollback()
+            return
+
+        active_document = await self._session.scalar(
+            select(DocumentModel.id)
+            .join(DocumentVersionModel, DocumentVersionModel.document_id == DocumentModel.id)
+            .join(CollectionModel, CollectionModel.id == DocumentModel.collection_id)
+            .where(
+                DocumentVersionModel.id == worker_document.document_version_id,
+                DocumentModel.deleted_at.is_(None),
+                CollectionModel.deleted_at.is_(None),
+            )
+        )
+        if active_document is None:
             await self._session.rollback()
             return
 
@@ -263,6 +282,12 @@ class SqlAlchemyDispatchRecoveryRepository:
         jobs = (
             await self._session.scalars(
                 select(IngestionJobModel)
+                .join(
+                    DocumentVersionModel,
+                    DocumentVersionModel.id == IngestionJobModel.document_version_id,
+                )
+                .join(DocumentModel, DocumentModel.id == DocumentVersionModel.document_id)
+                .join(CollectionModel, CollectionModel.id == DocumentModel.collection_id)
                 .where(
                     IngestionJobModel.status.in_(
                         (IngestionJobStatus.PENDING, IngestionJobStatus.RETRY_SCHEDULED)
@@ -270,6 +295,8 @@ class SqlAlchemyDispatchRecoveryRepository:
                     IngestionJobModel.stage == "queued",
                     (IngestionJobModel.dispatched_at.is_(None))
                     | (IngestionJobModel.dispatched_at < stale_before),
+                    DocumentModel.deleted_at.is_(None),
+                    CollectionModel.deleted_at.is_(None),
                 )
                 .order_by(IngestionJobModel.created_at.asc(), IngestionJobModel.id.asc())
                 .with_for_update(skip_locked=True)

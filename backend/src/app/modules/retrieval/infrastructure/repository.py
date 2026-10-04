@@ -68,6 +68,8 @@ class PgVectorRetrievalRepository:
             .where(
                 CollectionModel.owner_id == owner_id,
                 CollectionModel.id == collection_id,
+                CollectionModel.deleted_at.is_(None),
+                DocumentModel.deleted_at.is_(None),
                 DocumentVersionModel.status == DocumentVersionStatus.READY,
             )
         )

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import hashlib
 import json
 import math
 import os
@@ -26,6 +27,7 @@ from app.modules.conversations.application import (
     validate_citation_ids,
 )
 from app.modules.ingestion.domain import SourcePage, chunk_pages, normalize_for_retrieval
+from app.modules.ingestion.infrastructure.extraction import PdfTxtExtractor
 from app.modules.retrieval.application import (
     Evidence,
     RetrievalCandidate,
@@ -47,6 +49,7 @@ class Question:
     answerable: bool
     expected_evidence: list[str]
     expected_answer_terms: list[str]
+    expected_pages: list[int] | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,7 +66,7 @@ class EvalChunk:
 async def main() -> None:
     arguments = parse_arguments()
     config = json.loads(arguments.config.read_text(encoding="utf-8"))
-    questions = load_questions(arguments.dataset)
+    questions, dataset_names = load_questions(arguments.dataset)
     chunks = load_chunks(config)
     settings = Settings(
         embedding_provider=arguments.embedding_provider,
@@ -83,6 +86,7 @@ async def main() -> None:
     document_batch = await embedder.embed(tuple(item.normalized_text for item in chunks))
     embedding_seconds = perf_counter() - embedding_started
     results: list[dict[str, Any]] = []
+    reviews: list[dict[str, Any]] = []
     for question in questions:
         query_batch = await embedder.embed((normalize_for_retrieval(question.question),))
         evidence, retrieval_metrics = retrieve(
@@ -92,7 +96,7 @@ async def main() -> None:
             query_vector=query_batch.vectors[0],
             config=config,
         )
-        generation_metrics = await evaluate_generation(
+        generation_metrics, review = await evaluate_generation(
             question=question,
             evidence=evidence,
             generator=generator,
@@ -106,11 +110,13 @@ async def main() -> None:
                 **generation_metrics,
             }
         )
+        reviews.append(review)
 
     report = {
         "report_type": "measured_baseline",
         "measured_at": datetime.now(UTC).isoformat(),
         "dataset": arguments.dataset.name,
+        "dataset_sources": dataset_names,
         "dataset_size": len(questions),
         "config": config,
         "providers": {
@@ -146,8 +152,12 @@ async def main() -> None:
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    if arguments.review_output is not None:
+        write_review_packet(arguments.review_output, reviews)
     print(json.dumps(report["summary"], ensure_ascii=False, indent=2))
     print(f"Report: {arguments.output}")
+    if arguments.review_output is not None:
+        print(f"Human review packet: {arguments.review_output}")
 
 
 def retrieve(
@@ -212,6 +222,27 @@ def retrieve(
         ),
         "retrieved_evidence_ids": [item.evidence_id for item in evidence],
         "retrieved_documents": sorted({item.document_name for item in evidence}),
+        "retrieved_pages": sorted(
+            {
+                page
+                for item in evidence
+                for page in range(item.page_start, item.page_end + 1)
+            }
+        ),
+        "expected_page_retrieval": (
+            int(
+                all(
+                    any(
+                        item.document_name == question.document
+                        and item.page_start <= page <= item.page_end
+                        for item in evidence
+                    )
+                    for page in question.expected_pages
+                )
+            )
+            if question.answerable and question.expected_pages
+            else None
+        ),
     }
     return evidence, metrics
 
@@ -221,24 +252,28 @@ async def evaluate_generation(
     question: Question,
     evidence: tuple[Evidence, ...],
     generator: Any,
-) -> dict[str, Any]:
+) -> tuple[dict[str, Any], dict[str, Any]]:
     started = perf_counter()
     first_delta: float | None = None
     answer_parts: list[str] = []
     suggestions: list[str] = []
     completion: GenerationCompleted | None = None
-    async for event in generator.stream(
-        question=question.question,
-        language=question.language,
-        evidence=evidence,
-    ):
-        if isinstance(event, AnswerDelta):
-            first_delta = first_delta or perf_counter()
-            answer_parts.append(event.text)
-        elif isinstance(event, CitationSuggestion):
-            suggestions.append(event.evidence_id)
-        else:
-            completion = event
+    provider_failure: str | None = None
+    try:
+        async for event in generator.stream(
+            question=question.question,
+            language=question.language,
+            evidence=evidence,
+        ):
+            if isinstance(event, AnswerDelta):
+                first_delta = first_delta or perf_counter()
+                answer_parts.append(event.text)
+            elif isinstance(event, CitationSuggestion):
+                suggestions.append(event.evidence_id)
+            else:
+                completion = event
+    except (httpx.HTTPError, TimeoutError, OSError) as error:
+        provider_failure = type(error).__name__
     completed = perf_counter()
     answer = "".join(answer_parts)
     valid, invalid = validate_citation_ids(suggestions, evidence)
@@ -253,17 +288,27 @@ async def evaluate_generation(
         all(term in normalize_for_retrieval(cited_text).casefold() for term in expected_evidence)
         if question.answerable
         else len(valid) == 0
-    )
+    ) if provider_failure is None else None
     answer_relevance = (
         all(term in normalize_for_retrieval(answer).casefold() for term in expected_answers)
         if question.answerable
         else bool(completion and completion.abstained)
+    ) if provider_failure is None else None
+    abstention_correct = (
+        bool(completion) and completion.abstained != question.answerable
+        if provider_failure is None
+        else None
     )
-    abstention_correct = bool(completion) and completion.abstained != question.answerable
-    return {
-        "citation_identifier_valid": len(invalid) == 0,
+    metrics = {
+        "generation_succeeded": provider_failure is None,
+        "provider_failure": provider_failure,
+        "citation_identifier_valid": len(invalid) == 0 if provider_failure is None else None,
         "citation_support": citation_support,
-        "groundedness_proxy": len(invalid) == 0 and citation_support,
+        "groundedness_proxy": (
+            len(invalid) == 0 and bool(citation_support)
+            if provider_failure is None
+            else None
+        ),
         "answer_relevance": answer_relevance,
         "abstention_correct": abstention_correct,
         "abstained": bool(completion and completion.abstained),
@@ -275,22 +320,79 @@ async def evaluate_generation(
         ),
         "total_latency_ms": round((completed - started) * 1000, 3),
     }
+    review = {
+        "question_id": question.id,
+        "question": question.question,
+        "language": question.language,
+        "answerable": question.answerable,
+        "answer": answer,
+        "abstained": metrics["abstained"],
+        "citations": [
+            {
+                "evidence_id": item.evidence_id,
+                "document": item.document_name,
+                "page_start": item.page_start,
+                "page_end": item.page_end,
+                "source_text": item.source_text,
+            }
+            for item in valid
+        ],
+        "human_scores": {
+            "groundedness": None,
+            "citation_support": None,
+            "relevance": None,
+            "language_quality": None,
+            "abstention_correct": None,
+            "reviewer_notes": "",
+        },
+        "provider_failure": provider_failure,
+    }
+    return metrics, review
 
 
-def load_questions(path: Path) -> list[Question]:
-    return [
+def load_questions(path: Path) -> tuple[list[Question], list[str]]:
+    paths = [path]
+    if path.suffix == ".json":
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        paths = [path.parent / item for item in manifest["datasets"]]
+    questions = [
         Question(**json.loads(line))
-        for line in path.read_text(encoding="utf-8").splitlines()
+        for dataset_path in paths
+        for line in dataset_path.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
+    identifiers = [item.id for item in questions]
+    if len(identifiers) != len(set(identifiers)):
+        raise ValueError("Evaluation question identifiers must be unique")
+    return questions, [item.name for item in paths]
 
 
 def load_chunks(config: dict[str, Any]) -> list[EvalChunk]:
     chunks: list[EvalChunk] = []
-    for document_name in config["documents"]:
-        source = (ROOT / "fixtures" / document_name).read_text(encoding="utf-8")
+    extractor = PdfTxtExtractor()
+    for document_config in config["documents"]:
+        if isinstance(document_config, str):
+            document_name = document_config
+            expected_sha256 = None
+        else:
+            document_name = document_config["name"]
+            expected_sha256 = document_config.get("sha256")
+        source_path = ROOT / "fixtures" / document_name
+        source_bytes = source_path.read_bytes()
+        actual_sha256 = hashlib.sha256(source_bytes).hexdigest()
+        if expected_sha256 is not None and actual_sha256 != expected_sha256:
+            raise ValueError(
+                f"Fixture checksum drift for {document_name}: "
+                f"expected {expected_sha256}, got {actual_sha256}"
+            )
+        if source_path.suffix.casefold() == ".pdf":
+            with source_path.open("rb") as source:
+                extraction = extractor.extract(source=source, media_type="application/pdf")
+            pages = extraction.pages
+        else:
+            pages = (SourcePage(page_number=1, text=source_bytes.decode("utf-8")),)
         for chunk in chunk_pages(
-            (SourcePage(page_number=1, text=source),),
+            pages,
             chunk_size_tokens=int(config["chunk_size_tokens"]),
             overlap_tokens=int(config["chunk_overlap_tokens"]),
         ):
@@ -306,6 +408,14 @@ def load_chunks(config: dict[str, Any]) -> list[EvalChunk]:
                 )
             )
     return chunks
+
+
+def write_review_packet(path: Path, reviews: list[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "".join(json.dumps(item, ensure_ascii=False) + "\n" for item in reviews),
+        encoding="utf-8",
+    )
 
 
 def to_candidate(chunk: EvalChunk, score: float) -> RetrievalCandidate:
@@ -333,6 +443,9 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "retrieval_recall_at_k": average(answerable, "retrieval_recall_at_k"),
         "mrr": average(answerable, "reciprocal_rank"),
+        "expected_page_retrieval": average(answerable, "expected_page_retrieval"),
+        "generation_success_rate": average(results, "generation_succeeded"),
+        "provider_failure_count": sum(not item["generation_succeeded"] for item in results),
         "citation_identifier_validity": average(results, "citation_identifier_valid"),
         "citation_support": average(results, "citation_support"),
         "groundedness_proxy": average(results, "groundedness_proxy"),
@@ -431,7 +544,7 @@ def installed_version(package: str) -> str | None:
 
 
 def parse_arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the versioned Sprint 1 RAG baseline")
+    parser = argparse.ArgumentParser(description="Run a versioned RAG evaluation baseline")
     parser.add_argument(
         "--config",
         type=Path,
@@ -446,6 +559,12 @@ def parse_arguments() -> argparse.Namespace:
         "--output",
         type=Path,
         default=ROOT / "reports" / "sprint-1-deterministic.json",
+    )
+    parser.add_argument(
+        "--review-output",
+        type=Path,
+        default=None,
+        help="Optional JSONL packet for blinded human scoring",
     )
     parser.add_argument(
         "--embedding-provider",

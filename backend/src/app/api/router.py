@@ -9,9 +9,13 @@ from app.modules.conversations.presentation.routes import (
     conversation_router,
 )
 from app.modules.documents.presentation.routes import router as documents_router
+from app.modules.feedback.presentation import router as feedback_router
+from app.modules.identity.presentation.routes import router as identity_router
 
 api_router = APIRouter()
 api_router.include_router(health_router, tags=["system"])
+api_router.include_router(identity_router)
+api_router.include_router(feedback_router)
 api_router.include_router(collections_router)
 api_router.include_router(documents_router)
 api_router.include_router(conversation_collection_router)

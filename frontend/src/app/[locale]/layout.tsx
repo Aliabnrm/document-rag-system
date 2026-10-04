@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 
 import { routing } from "@/i18n/routing";
 
+import { englishFont, persianFont } from "../fonts";
 import { AppProviders } from "../providers";
 
 import "../globals.css";
@@ -38,9 +39,10 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
   const direction = locale === "fa" ? "rtl" : "ltr";
+  const localeFont = locale === "fa" ? persianFont.variable : englishFont.variable;
 
   return (
-    <html lang={locale} dir={direction}>
+    <html lang={locale} dir={direction} className={localeFont}>
       <body>
         <NextIntlClientProvider>
           <AppProviders>{children}</AppProviders>

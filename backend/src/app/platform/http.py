@@ -88,6 +88,11 @@ def install_exception_handlers(app: FastAPI) -> None:
                 message_key=error.message_key,
                 details=details or None,
             ),
+            headers=(
+                {"Retry-After": str(error.context["retry_after"])}
+                if "retry_after" in error.context
+                else None
+            ),
         )
 
     @app.exception_handler(RequestValidationError)

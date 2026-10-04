@@ -10,19 +10,24 @@ import {
   formatFileSize,
 } from "../model/document-presentation";
 import styles from "../workspace.module.css";
+import { DeleteConfirmation } from "./delete-confirmation";
 
 type DocumentRowProps = {
   document: DocumentItem;
   locale: Locale;
   isRetrying: boolean;
+  isDeleting: boolean;
   onRetry: () => void;
+  onDelete: () => void;
 };
 
 export function DocumentRow({
   document,
   locale,
   isRetrying,
+  isDeleting,
   onRetry,
+  onDelete,
 }: DocumentRowProps) {
   const t = useTranslations("Workspace");
   const tone =
@@ -55,16 +60,26 @@ export function DocumentRow({
             {t(errorMessageKey(document.error_code))}
           </p>
         ) : null}
-        {document.status === "failed" ? (
-          <button
-            type="button"
-            className={styles.textButton}
-            onClick={onRetry}
-            disabled={isRetrying}
-          >
-            {t("retry")}
-          </button>
-        ) : null}
+        <div className={styles.documentActions}>
+          {document.status === "failed" ? (
+            <button
+              type="button"
+              className={styles.textButton}
+              onClick={onRetry}
+              disabled={isRetrying}
+            >
+              {t("retry")}
+            </button>
+          ) : null}
+          <DeleteConfirmation
+            label={t("deleteDocument")}
+            confirmation={t("deleteDocumentConfirmation", {
+              name: document.display_name,
+            })}
+            isPending={isDeleting}
+            onConfirm={onDelete}
+          />
+        </div>
       </div>
     </article>
   );

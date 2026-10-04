@@ -14,7 +14,11 @@ evals/      RAG evaluation datasets and experiments (added with the first RAG sl
 
 ## Current milestone
 
-Sprint 1 builds the first end-to-end RAG vertical slice: document upload, asynchronous ingestion, retrieval, grounded generation, validated citations, and bilingual user flows. See [docs/product/sprint-1.md](docs/product/sprint-1.md).
+Sprint 2 turns the completed RAG vertical slice into a trusted beta foundation: measured
+real-model quality, application-owned email/password authentication, two-user isolation,
+resumable conversations, safe deletion, feedback, and quotas. Authentication uses Argon2id and
+revocable opaque sessions without OAuth/OIDC or an external identity provider. See
+[docs/product/sprint-2.md](docs/product/sprint-2.md).
 
 Repository-wide and subsystem-specific Codex instructions live in layered `AGENTS.md` files. See [docs/engineering/README.md](docs/engineering/README.md).
 
@@ -49,8 +53,15 @@ Detailed setup, operational recovery, configuration, API events, and evaluation 
 - [Ingestion worker runbook](docs/runbooks/ingestion-worker.md)
 - [Environment reference](docs/reference/environment.md)
 - [Sprint 1 API guide](docs/api/sprint-1-api.md)
+- [Sprint 2 Auth/product API guide](docs/api/sprint-2-api.md)
+- [Account administration CLI](docs/runbooks/auth-cli.md)
+- [Session incident runbook](docs/runbooks/session-incident.md)
+- [Deletion and retention runbook](docs/runbooks/deletion-retention.md)
+- [Quota policy](docs/reference/quota-policy.md)
 - [Sprint 1 evaluation](docs/evaluation/sprint-1.md)
+- [Sprint 2 generator evaluation](docs/evaluation/sprint-2.md)
 - [Persian backend/AI walkthrough](docs/learning/sprint-1-rag-walkthrough-fa.md)
+- [Persian Sprint 2 trust/auth walkthrough](docs/learning/sprint-2-trusted-foundation-fa.md)
 - [Frontend architecture](docs/engineering/frontend-architecture.md)
 
 ## Quality checks

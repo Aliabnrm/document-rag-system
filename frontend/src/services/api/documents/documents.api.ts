@@ -72,3 +72,15 @@ export function retryDocumentApi(
     DocumentSchema,
   );
 }
+
+export async function deleteDocumentApi(
+  api: AxiosInstance,
+  collectionId: string,
+  documentId: string,
+  signal?: AbortSignal,
+): Promise<void> {
+  await api.delete(
+    `/api/v1/collections/${collectionId}/documents/${documentId}`,
+    { signal },
+  );
+}

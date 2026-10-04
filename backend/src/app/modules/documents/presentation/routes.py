@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 from datetime import datetime
 from typing import Annotated
 from uuid import UUID
@@ -7,18 +8,26 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, File, Query, Request, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.documents.application import CreateDocumentUpload, ListDocuments, RetryIngestion
+from app.modules.data_lifecycle import RequestDocumentDeletion
+from app.modules.data_lifecycle.infrastructure import SqlAlchemyCleanupRepository
+from app.modules.documents.application import (
+    CreateDocumentUpload,
+    ListDocuments,
+    RetryIngestion,
+)
 from app.modules.documents.infrastructure.repository import SqlAlchemyDocumentRepository
 from app.modules.documents.presentation.schemas import (
     DocumentListResponse,
     DocumentResponse,
     UploadAcceptedResponse,
 )
+from app.modules.identity.presentation.dependencies import CurrentUser, get_current_user
 from app.platform.database.dependencies import get_db_session
 from app.platform.errors import ApplicationError
-from app.platform.identity import CurrentUser, get_current_user
+from app.platform.observability import log_event
 
 router = APIRouter(prefix="/collections/{collection_id}", tags=["documents"])
+logger = logging.getLogger(__name__)
 
 
 @router.post(
@@ -40,6 +49,7 @@ async def upload_document(
         storage=request.app.state.source_storage,
         dispatcher=request.app.state.job_dispatcher,
         max_upload_bytes=settings.max_upload_bytes,
+        max_documents_per_user=settings.quota_documents_per_user,
         pipeline_version=settings.pipeline_version,
     )
     result = await use_case.execute(
@@ -97,6 +107,45 @@ async def get_document_status(
         document_id=document_id,
     )
     return DocumentResponse.from_domain(item)
+
+
+@router.delete(
+    "/documents/{document_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    operation_id="deleteDocument",
+)
+async def delete_document(
+    collection_id: UUID,
+    document_id: UUID,
+    request: Request,
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
+) -> None:
+    async with session.begin():
+        cleanup = await RequestDocumentDeletion(
+            documents=SqlAlchemyDocumentRepository(session),
+            cleanup=SqlAlchemyCleanupRepository(session),
+        ).execute(
+            owner_id=current_user.id,
+            collection_id=collection_id,
+            document_id=document_id,
+        )
+    try:
+        await request.app.state.deletion_dispatcher.dispatch(cleanup_job_id=cleanup.id)
+    except Exception:
+        log_event(
+            logger,
+            "deletion_cleanup_dispatch_deferred",
+            user_id=current_user.id,
+            collection_id=collection_id,
+            error_code="queue_unavailable",
+        )
+    log_event(
+        logger,
+        "document_deleted",
+        user_id=current_user.id,
+        collection_id=collection_id,
+    )
 
 
 @router.post(

@@ -16,8 +16,10 @@ not duplicate routing with `pages/` or a custom `router/` directory.
 frontend/src/
   app/
     [locale]/                 route, metadata, and page composition
+    fonts.ts                  locale typography definitions for `next/font`
     providers.tsx            browser QueryClient boundary
   components/ui/             shared visual primitives
+  features/auth/             account/session UI and authentication orchestration
   features/document-qa/
     components/              focused feature presentation
     hooks/                   query, mutation, upload, and streaming orchestration
@@ -127,3 +129,6 @@ pnpm build
 Behavior tests cover the public workspace flow. Boundary tests cover injected endpoint clients,
 invalid response contracts, file validation, stream frame parsing, and partial-answer reduction.
 Visual changes still require Persian and English inspection at mobile and desktop widths.
+
+The visual foundations, bilingual typography, responsive grid, and interaction-state rules are
+documented in [`frontend-design-system.md`](./frontend-design-system.md).
