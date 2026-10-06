@@ -159,7 +159,7 @@ def test_create_upload_ingest_ask_and_validate_citation() -> None:
         )
         assert abstention_response.status_code == 200
         assert '"abstained": true' in abstention_response.text
-        assert "I could not find an answer" in abstention_response.text
+        assert "event: answer_delta" in abstention_response.text
         assert "event: citations" not in abstention_response.text
 
         question_quota = client.post(
@@ -184,6 +184,9 @@ def test_create_upload_ingest_ask_and_validate_citation() -> None:
         assert message_items[1]["abstained"] is False
         assert message_items[1]["citations"][0]["page_start"] == 1
         assert message_items[3]["abstained"] is True
+        assert message_items[3]["content"] == (
+            "I could not find an answer to this question in the ready documents."
+        )
         assert message_items[3]["citations"] == []
         answer_message_id = message_items[1]["id"]
 
