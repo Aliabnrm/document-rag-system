@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     embedding_source_repo: str = "qdrant/paraphrase-multilingual-MiniLM-L12-v2-onnx-Q"
     embedding_revision: str = "faf4aa4225822f3bc6376869cb1164e8e3feedd0"
     answer_provider: Literal["deterministic", "ollama"] = "deterministic"
-    answer_model: str = "qwen2.5:1.5b"
+    answer_model: str = "qwen3:1.7b"
     answer_max_output_tokens: int = Field(default=384, ge=32, le=4096)
     ollama_base_url: str = "http://localhost:11434"
     chunk_size_tokens: int = Field(default=220, ge=32, le=2048)

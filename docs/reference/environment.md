@@ -24,7 +24,7 @@ credentials.
 | `EMBEDDING_REVISION` | Required 40-character source commit for FastEmbed | API/worker |
 | `EMBEDDING_DIMENSIONS` | `384`; must match database vector dimension | API/worker |
 | `ANSWER_PROVIDER` | `deterministic` or `ollama`; deterministic by default | API |
-| `ANSWER_MODEL` | Ollama tag such as `qwen2.5:1.5b` | API |
+| `ANSWER_MODEL` | `qwen3:1.7b` local demonstration candidate when `ANSWER_PROVIDER=ollama`; deterministic generation remains the default provider | API |
 | `ANSWER_MAX_OUTPUT_TOKENS` | `384`; hard bound against runaway generation | API |
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | API |
 | `RETRIEVAL_DENSE_K` / `RETRIEVAL_LEXICAL_K` | Candidate depths, both `12` | API |
